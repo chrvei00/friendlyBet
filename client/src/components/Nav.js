@@ -14,6 +14,9 @@ function Navbar() {
                 <a class="nav-link active" aria-current="page" href="/bets">Bets</a>
                 </li>
                 <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="/createbet">Create bet</a>
+                </li>
+                <li class="nav-item">
                 <a class="nav-link" href="/leaderboard">Leaderboard</a>
                 </li>
                 <li class="nav-item">
