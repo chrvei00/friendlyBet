@@ -1,27 +1,27 @@
 import {React, useEffect, useState} from "react";
-import { Navigate } from "react-router-dom";
-import isAuth from "../services/authService";
+import { Navigate, useNavigate } from "react-router-dom";
+import Nav from "./Nav"
 
 function getBets() {
     let bets = ["bet1", "bet2", "bet3"]
     return bets;
 }
 
+
 function Bets() {
-    
-    const [auth, setAuth] = useState(true);
-    
-    useEffect(() => {       
-        // call the function
-        setAuth(() => isAuth()
-          // make sure to catch any error
-          .catch(console.error))
+    const navigate = useNavigate();
+    const [profile, setProfile] = useState(null);
+    useEffect(() => {
+        fetch("/api/login", {
+          method: "GET",
+          headers: {
+            "x-access-token": localStorage.getItem("token")
+          }
+        })
+        .then(res => res.json())
+        .then(data => data.isLoggedIn ? setProfile(data.profile) : navigate("/"))
+        // eslint-disable-next-line
       }, [])
-
-
-    if (!auth) {
-        return <Navigate to="/" />
-    }
 
     let bets = getBets().map( bet =>
         <div class="container">
@@ -39,6 +39,7 @@ function Bets() {
     );
     return (
         <>
+        <Nav />
         <div class="container mb-4">
         <div class="card">
         <div class="card-header">
