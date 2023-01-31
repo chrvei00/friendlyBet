@@ -1,6 +1,23 @@
-import React from "react";
+import {React, useEffect, useState} from "react";
+import isAuth from "../services/authService";
+import { Navigate } from "react-router-dom";
 
 function Leaderbaord() {
+
+  const [auth, setAuth] = useState(isAuth());
+    
+  useEffect(() => {       
+      // call the function
+      setAuth(() => isAuth()
+        // make sure to catch any error
+        .catch(console.error))
+    }, [])
+
+  console.log(auth);
+  if (!auth) {
+      return <Navigate to="/" />
+  }
+    
     return (
         <div class="container">
     <table class="table table-dark">

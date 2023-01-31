@@ -1,11 +1,29 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import isAuth from "../services/authService";
+import { Navigate } from "react-router-dom";
+
 
 function CreateBet() {
+
+    const [auth, setAuth] = useState(true);
     
-    const [title, setTitle] = useState("");
-    const [oddsW = 1.5, setOddsW] = useState("");
-    const [oddsL = 1.5, setOddsL] = useState("");
-    const [description, setDescription] = useState("");
+    useEffect(() => {       
+        // call the function
+        setAuth(() => isAuth()
+          // make sure to catch any error
+          .catch(console.error))
+      }, [])
+
+
+      
+      const [title, setTitle] = useState("");
+      const [oddsW = 1.5, setOddsW] = useState("");
+      const [oddsL = 1.5, setOddsL] = useState("");
+      const [description, setDescription] = useState("");
+      
+      if (!auth) {
+          return <Navigate to="/" />
+      }
 
     let handleSubmit = async (e) => {
         e.preventDefault();

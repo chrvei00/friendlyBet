@@ -1,8 +1,24 @@
 
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
+import { Navigate } from "react-router-dom";
+import isAuth from "../services/authService"
 
 function Auth (props) {
+  
+  const [auth, setAuth] = useState(false);
   let [authMode, setAuthMode] = useState("signin")
+    
+  useEffect(() => {       
+      // call the function
+      setAuth(() => isAuth()
+        // make sure to catch any error
+        .catch(console.error))
+    }, [])
+    
+    if (auth) {
+      console.log(auth)
+        return <Navigate to="/bets" />
+    }
 
   const changeAuthMode = () => {
     setAuthMode(authMode === "signin" ? "signup" : "signin")

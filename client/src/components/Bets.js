@@ -1,4 +1,6 @@
-import React from "react";
+import {React, useEffect, useState} from "react";
+import { Navigate } from "react-router-dom";
+import isAuth from "../services/authService";
 
 function getBets() {
     let bets = ["bet1", "bet2", "bet3"]
@@ -6,6 +8,21 @@ function getBets() {
 }
 
 function Bets() {
+    
+    const [auth, setAuth] = useState(true);
+    
+    useEffect(() => {       
+        // call the function
+        setAuth(() => isAuth()
+          // make sure to catch any error
+          .catch(console.error))
+      }, [])
+
+
+    if (!auth) {
+        return <Navigate to="/" />
+    }
+
     let bets = getBets().map( bet =>
         <div class="container">
         <div class="card">
