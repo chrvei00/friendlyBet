@@ -1,5 +1,7 @@
 const profile = require("../models/profile");
 const profileService = require("../services/profileService");
+const jwt = require("jsonwebtoken");
+const { JWT_SECRET } = require("../config/config");
  
 exports.getAllProfiles = async (req, res) => {
   try {
@@ -72,6 +74,15 @@ exports.auth = async (req, res) => {
       } else if (profile.password != password) {
         return res.status(400).json({message: "Profil matcher ikke passordet"})
       } else {
+        jwt.sign(profile, 
+          JWT_SECRET, 
+          {expiresIn: 86400}, 
+          (err, token) => {
+            if(err) return res.json({message: err});
+            return res.json({
+              message: "success", token: token
+            })
+        })
         req.session.profile = profile
         return res.status(200).json({message: "Logget inn.", profile})
       }

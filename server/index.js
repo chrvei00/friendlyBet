@@ -1,5 +1,7 @@
 //Dependencies
 const path = require("path");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 //  Server-dependencies
 const express = require("express");
 const session = require("express-session");
