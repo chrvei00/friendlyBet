@@ -1,5 +1,5 @@
 import {React, useEffect, useState} from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Nav from "./Nav"
 
 function getBets() {
@@ -43,7 +43,7 @@ function Bets() {
         <div class="container mb-4">
         <div class="card">
         <div class="card-header">
-            Profil
+            {profile.name}
         </div>
         <div class="card-body">
             <h5 class="card-title">Navnet til profilen</h5>

@@ -10,7 +10,8 @@ const betSchema = new Schema({
     description: String,
     approved: {type: Boolean, default: false},
     winOrLoss: {type: Boolean, default: false},
-    finished: {type: Boolean, default: false}
+    finished: {type: Boolean, default: false},
+    author: String,
 });
 
 module.exports = mongoose.model("bet", betSchema);

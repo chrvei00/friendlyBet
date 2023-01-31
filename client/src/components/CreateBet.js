@@ -1,17 +1,21 @@
 import { useState, useEffect } from "react";
-import isAuth from "../services/authService";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 
 function CreateBet() {
 
-    const [auth, setAuth] = useState(true);
-    
-    useEffect(() => {       
-        // call the function
-        setAuth(() => isAuth()
-          // make sure to catch any error
-          .catch(console.error))
+    const navigate = useNavigate();
+    const [profile, setProfile] = useState(null);
+    useEffect(() => {
+        fetch("/api/login", {
+          method: "GET",
+          headers: {
+            "x-access-token": localStorage.getItem("token")
+          }
+        })
+        .then(res => res.json())
+        .then(data => data.isLoggedIn ? setProfile(data.profile) : navigate("/"))
+        // eslint-disable-next-line
       }, [])
 
 
@@ -20,11 +24,7 @@ function CreateBet() {
       const [oddsW = 1.5, setOddsW] = useState("");
       const [oddsL = 1.5, setOddsL] = useState("");
       const [description, setDescription] = useState("");
-      
-      if (!auth) {
-          return <Navigate to="/" />
-      }
-
+    
     let handleSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -35,7 +35,9 @@ function CreateBet() {
                     title: title,
                     oddsW: oddsW,
                     oddsL: oddsL,
-                    description: description}),
+                    description: description,
+                    author: profile.name
+                }),
             });
         await res.json();
         if (res.status === 200) {
