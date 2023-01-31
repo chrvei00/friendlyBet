@@ -1,3 +1,4 @@
+const profile = require("../models/profile");
 const profileModel = require("../models/profile");
  
 exports.getAllProfiles = async () => {
@@ -7,10 +8,14 @@ exports.getAllProfiles = async () => {
 exports.createProfile = async (profile) => {
   return await profileModel.create(profile);
 };
-exports.getProfileById = async (id) => {
-  return await profileModel.findById(id);
+exports.getProfileByName = async (name) => {
+  return await profileModel.findOne({ name: name });
 };
- 
+
+exports.getProfileById = async (profile) => {
+  return await profileModel.findById(profile.id);
+}
+
 exports.updateProfile = async (id, profile) => {
   return await profileModel.findByIdAndUpdate(id, profile);
 };

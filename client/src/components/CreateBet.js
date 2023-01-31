@@ -3,8 +3,8 @@ import { useState } from "react";
 function CreateBet() {
     
     const [title, setTitle] = useState("");
-    const [oddsW, setOddsW] = useState("");
-    const [oddsL, setOddsL] = useState("");
+    const [oddsW = 1.5, setOddsW] = useState("");
+    const [oddsL = 1.5, setOddsL] = useState("");
     const [description, setDescription] = useState("");
 
     let handleSubmit = async (e) => {
@@ -19,8 +19,7 @@ function CreateBet() {
                     oddsL: oddsL,
                     description: description}),
             });
-        // eslint-disable-next-line
-        let resJson = await res.json();
+        await res.json();
         if (res.status === 200) {
             setTitle("Bet sendt inn");
             setOddsW("");
