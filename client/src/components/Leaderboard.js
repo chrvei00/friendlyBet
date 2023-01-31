@@ -1,24 +1,28 @@
 import {React, useEffect, useState} from "react";
-import isAuth from "../services/authService";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import Nav from "./Nav"
 
 function Leaderbaord() {
 
-  const [auth, setAuth] = useState(isAuth());
-    
-  useEffect(() => {       
-      // call the function
-      setAuth(() => isAuth()
-        // make sure to catch any error
-        .catch(console.error))
+  const navigate = useNavigate();
+  // eslint-disable-next-line
+  const [profile, setProfile] = useState(null);
+  useEffect(() => {
+      fetch("/api/login", {
+        method: "GET",
+        headers: {
+          "x-access-token": localStorage.getItem("token")
+        }
+      })
+      .then(res => res.json())
+      .then(data => data.isLoggedIn ? setProfile(data.profile) : navigate("/"))
+      // eslint-disable-next-line
     }, [])
 
-  console.log(auth);
-  if (!auth) {
-      return <Navigate to="/" />
-  }
     
     return (
+      <>
+      <Nav />
         <div class="container">
     <table class="table table-dark">
   <thead>
@@ -47,6 +51,7 @@ function Leaderbaord() {
   </tbody>
 </table>
 </div>
+</>
     );
 }
 

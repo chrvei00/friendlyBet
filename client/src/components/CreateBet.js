@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
+import Nav from "./Nav"
 
 function CreateBet() {
 
@@ -54,6 +54,8 @@ function CreateBet() {
       };
 
     return(
+        <>
+        <Nav />
         <div class="container bg-dark">
         <form onSubmit={handleSubmit} id="sendBet">
         <div class="form-group py-2">
@@ -99,6 +101,7 @@ function CreateBet() {
         <button type="submit" class="btn btn-primary my-3">Send inn</button>
         </form>
         </div>
+        </>
     );
 }
 

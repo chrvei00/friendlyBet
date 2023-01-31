@@ -43,7 +43,7 @@ function Bets() {
         <div class="container mb-4">
         <div class="card">
         <div class="card-header">
-            {profile.name}
+            {profile ? profile.name : "Profil"}
         </div>
         <div class="card-body">
             <h5 class="card-title">Navnet til profilen</h5>
