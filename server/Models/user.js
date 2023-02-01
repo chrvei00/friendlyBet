@@ -2,8 +2,8 @@ const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
 
-const profileSchema = new Schema({
-    name: {type: String, required: true, unique: true},
+const userSchema = new Schema({
+    username: {type: String, required: true, unique: true},
     password: {type: String, required: true},
     date: {type: Date, default: Date.now},
     total: {type: Number, default: 5000},
@@ -13,4 +13,4 @@ const profileSchema = new Schema({
     admin: {type: Boolean, defulat: false}
 });
 
-module.exports = mongoose.model("profile", profileSchema);
+module.exports = mongoose.model("user", userSchema);
