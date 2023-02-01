@@ -41,7 +41,7 @@ exports.createUser = async (req, res) => {
       const newUser = new user({username: username, password: password});
       const sessUser = await userService.createUser(newUser);
       req.session.user = sessionizeUser(sessUser);
-      res.status(200).json({ message: "user created", user: sessUser});
+      res.status(200).json({ data: sessUser, message: "user created"});
     }
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -76,7 +76,7 @@ exports.auth = async (req, res) => {
         return res.status(400).json({message: "Profil matcher ikke passordet"})
       } else {
         req.session.user = user
-        return res.status(200).json({message: "Logget inn.", user})
+        return res.status(200).json({data: user, message: "Logget inn."})
       }
     })
   } catch (error) {
@@ -87,9 +87,9 @@ exports.auth = async (req, res) => {
 exports.authCheck = async (req, res) => {
   const sessUser = req.session.user;
   if (sessUser) {
-    return res.status(201).json({ msg: "Autistikert :)", sessUser });
+    return res.status(201).json({ data: user, message: "Autistikert :)" });
   } else {
-    return res.status(401).json({ msg: "Unautorisert" });
+    return res.status(401).json({ message: "!auth" });
   }
 }
 
