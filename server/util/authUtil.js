@@ -1,3 +1,3 @@
-export const sessionizeUser = user => {
+function sessionizeUser(user) {
     return { userId: user.id, username: user.username };
-  }
+}

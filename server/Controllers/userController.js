@@ -1,6 +1,6 @@
 const user = require("../models/user");
 const userService = require("../services/userService");
-const sessionizeUser = require("../util/authUtil")
+const { sessionizeUser } = require("../util/authUtil")
  
 exports.getAllUsers = async (req, res) => {
   try {
@@ -39,9 +39,9 @@ exports.createUser = async (req, res) => {
       return res.status(400).json({message: "brukernavn allerede i bruk"});
     } else {
       const newUser = new user({username: username, password: password});
-      const sessUser = await userService.createUser(newUser);
-      req.session.user = sessionizeUser(sessUser);
-      res.status(200).json({ data: sessUser, message: "user created"});
+      await userService.createUser(newUser);
+      req.session.user = newUser;
+      res.status(200).json({ data: newUser, message: "user created"});
     }
   } catch (err) {
     res.status(500).json({ error: err.message });

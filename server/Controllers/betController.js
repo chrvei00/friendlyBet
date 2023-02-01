@@ -11,7 +11,6 @@ exports.getAllBets = async (req, res) => {
  
 exports.createBet = async (req, res) => {
   try {
-    console.log(req.body)
     const bet = await betService.createBet(req.body);
     res.json({ data: bet, status: "success" });
   } catch (err) {

@@ -2,11 +2,7 @@ const express = require("express");
 
 const {
   getAllUsers,
-  getUserByName,
-  getUserById,
   createUser,
-  updateUser,
-  deleteUser,
   auth,
   authCheck,
   logout
@@ -14,10 +10,8 @@ const {
  
 const router = express.Router();
 
-router.route("/all").get(getAllUsers)
-router.route("/login").post(auth).get(authCheck);
-router.route("/logout").delete(logout);
+router.route("/").get(getAllUsers)
+router.route("/auth").post(auth).get(authCheck).delete(logout);
 router.route("/register").post(createUser);
-router.route("/:id").put(updateUser).delete(deleteUser).get(getUserById);
  
 module.exports = router;
