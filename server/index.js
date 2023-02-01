@@ -1,7 +1,5 @@
 //Dependencies
 const path = require("path");
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
 //  Server-dependencies
 const express = require("express");
 const session = require("express-session");
@@ -69,20 +67,15 @@ app.use(express.static(path.resolve(__dirname, '../client/build')));
 
 //api-calls
 const betRouter = require("./Routes/betRoutes");
-const profileRouter = require("./Routes/profileRoutes");
+const userRouter = require("./Routes/userRoutes");
 app.use("/api/bet", betRouter);
-app.use("/api/profile", profileRouter);
+app.use("/api/user", userRouter);
 
 // Handle all other GET-reqs
 app.get('*', (req, res) => {
   console.log(req.body);
-  res.redirect(404, "/");
+  res.status(404).json({ message: "404 not found"});
 });
-
-app.post("/test", (req, res) => {
-  console.log(req.body);
-  res.sendStatus(200);
-})
 
 app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);
