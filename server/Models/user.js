@@ -7,8 +7,8 @@ const userSchema = new Schema({
   password: { type: String, required: true },
   date: { type: Date, default: Date.now },
   total: { type: Number, default: 5000 },
-  activeBets: { type: Array, default: [] },
-  prevBets: { type: Array, default: [] },
+  activeBets: [{ betID: String, amount: Number }],
+  prevBets: [{ betID: String, amount: Number }],
   approved: { type: Boolean, defulat: false },
   admin: { type: Boolean, defulat: false },
 });

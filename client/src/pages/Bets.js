@@ -1,18 +1,46 @@
 import { React } from "react";
 import Nav from "../components/Nav";
+import axios from "axios";
+
+const handleBet = (e) => {
+  e.preventDefault();
+  console.log(e.target.amount.value);
+  const body = JSON.stringify({
+    amount: e.target.amount.value,
+  });
+  axios
+    .post("/api/bet/placebet/" + e.target.id.value, body, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response) => {
+      console.log(response);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
 
 function Bets(props) {
-  console.log(props.bets);
   const showBets = props.bets.map((bet) => (
-    <div className="container py-3">
+    <div key={bet._id} className="container py-3">
       <div className="card">
         <div className="card-header">{bet.title}</div>
         <div className="card-body">
           <h5 className="card-title">{bet.title}</h5>
           <p className="card-text">Beskrivelse av hva bettet er.</p>
-          <a href="/createbet" className="btn btn-primary">
-            Legg inn bet
-          </a>
+          <form
+            onSubmit={(e) => {
+              handleBet(e);
+            }}
+          >
+            <input id="amount" type="number" name="amount" />
+            <input id="id" type="hidden" name="id" value={bet._id} />
+            <button type="submit" className="btn btn-primary">
+              Send inn
+            </button>
+          </form>
         </div>
       </div>
     </div>

@@ -1,5 +1,6 @@
 const user = require("../models/user");
 const userService = require("../services/userService");
+const bcrypt = require("bcrypt");
 const { sessionizeUser } = require("../util/authUtil");
 
 exports.getAllUsers = async (req, res) => {
@@ -38,10 +39,11 @@ exports.createUser = async (req, res) => {
     } else if (await userService.getUserByName(username)) {
       return res.status(400).json({ message: "brukernavn allerede i bruk" });
     } else {
-      const newUser = new user({ username: username, password: password });
-      await userService.createUser(newUser);
-      req.session.user = newUser;
-      res.status(200).json({ data: newUser, message: "user created" });
+      const hashedPwd = await bcrypt.hash(password, 5);
+      req.session.user = await userService.createUser(
+        new user({ username: username, password: hashedPwd })
+      );
+      res.status(200).json({ data: req.session.user, message: "user created" });
     }
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -68,12 +70,11 @@ exports.deleteUser = async (req, res) => {
 
 exports.auth = async (req, res) => {
   try {
-    console.log(req.body);
     const { username, password } = req.body;
-    user.findOne({ username: username }).then((user) => {
+    user.findOne({ username: username }).then(async (user) => {
       if (!user) {
         return res.status(400).json({ message: "Profil finnes ikke" });
-      } else if (user.password != password) {
+      } else if (!(await bcrypt.compare(password, user.password))) {
         return res
           .status(400)
           .json({ message: "Profil matcher ikke passordet" });

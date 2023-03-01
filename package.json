@@ -4,9 +4,10 @@
   "description": "Betting system for friendgroups, if u have any",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon server/index.js",
-    "build": "cd client && npm install && npm run build",
-    "test": "test"
+    "start-server": "cd server && npm start",
+    "start-client": "cd client && npm start",
+    "build-server": "cd server && npm run build",
+    "build-client": "cd client && npm run build"
   },
   "repository": {
     "type": "git",
@@ -19,21 +20,6 @@
   },
   "homepage": "https://github.com/chrvei00/friendlyBet#readme",
   "dependencies": {
-    "bcrypt": "^5.1.0",
-    "connect-mongodb-session": "^3.1.1",
-    "dotenv": "^16.0.3",
-    "express": "^4.18.2",
-    "express-session": "^1.17.3",
-    "mongodb": "^4.13.0",
-    "mongoose": "^6.8.4"
-  },
-  "engines": {
-    "node": "18.13.0"
-  },
-  "devDependencies": {
-    "chai": "^4.3.7",
-    "chai-http": "^4.3.0",
-    "mocha": "^10.2.0",
-    "nodemon": "^2.0.20"
+    "bcrypt": "^5.1.0"
   }
 }

@@ -5,13 +5,13 @@ const {
   createUser,
   auth,
   authCheck,
-  logout
+  logout,
 } = require("../Controllers/userController");
- 
+
 const router = express.Router();
 
-router.route("/").get(getAllUsers)
+router.route("/").get(getAllUsers);
 router.route("/auth").post(auth).get(authCheck).delete(logout);
 router.route("/register").post(createUser);
- 
+
 module.exports = router;

@@ -6,7 +6,7 @@ const session = require("express-session");
 //  DB-dependencies
 const mongoose = require("mongoose");
 const MongoDBStore = require("connect-mongodb-session")(session);
-mongoose.set('strictQuery', false);
+mongoose.set("strictQuery", false);
 
 //Define constants
 
@@ -43,7 +43,7 @@ mongoose.connect(
 // setting up connect-mongodb-session store
 const mongoDBstore = new MongoDBStore({
   uri: MongoURI,
-  collection: "sessions"
+  collection: "sessions",
 });
 
 // Express-Session
@@ -57,13 +57,13 @@ app.use(
     cookie: {
       maxAge: MAX_AGE,
       sameSite: false,
-      secure: IS_PROD
-    }
+      secure: IS_PROD,
+    },
   })
 );
 
 // Have Node serve the files for our built React app
-app.use(express.static(path.resolve(__dirname, '../client/build')));
+app.use(express.static(path.resolve(__dirname, "../client/build")));
 
 //api-calls
 const betRouter = require("./Routes/betRoutes");
@@ -72,9 +72,8 @@ app.use("/api/bet", betRouter);
 app.use("/api/user", userRouter);
 
 // Handle all other GET-reqs
-app.get('*', (req, res) => {
-  console.log(req.body);
-  res.status(404).json({ message: "404 not found"});
+app.get("*", (req, res) => {
+  res.status(404).json({ message: "404 not found" });
 });
 
 app.listen(PORT, () => {

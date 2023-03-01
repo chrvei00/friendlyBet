@@ -16,7 +16,7 @@ function Auth(props) {
   };
   const handleRegister = (e) => {
     e.preventDefault();
-    props.handleLogin(username, password);
+    props.handleRegister(username, password);
   };
 
   if (props.user) {
@@ -81,7 +81,7 @@ function Auth(props) {
               </span>
             </div>
             <div className="form-group mt-3">
-              <label>Namn</label>
+              <label>Navn</label>
               <input
                 onChange={(event) => {
                   setUsername(event.target.value);
