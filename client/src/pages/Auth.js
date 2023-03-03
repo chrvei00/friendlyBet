@@ -3,15 +3,22 @@ import { Navigate } from "react-router-dom";
 const { login, register, checkAuth } = require("../util/api");
 
 function Auth(props) {
+  const [error, setError] = useState("");
+
   const { updateUser } = props;
   const handleLogin = (e) => {
     e.preventDefault();
     login({ username: username, password: password })
       .then((res) => {
-        props.updateUser(res.data.data);
+        if (res.status === 201) {
+          setError(res.data.message);
+          props.updateUser(res.data.data);
+          window.location.reload();
+        }
       })
       .catch((err) => {
-        console.log(err.message);
+        setError(err.response.data.message);
+        console.log(err.response);
       });
   };
 
@@ -19,10 +26,15 @@ function Auth(props) {
     e.preventDefault();
     register({ username: username, password: password })
       .then((res) => {
-        props.updateUser(res.data.data);
+        if (res.status === 201) {
+          setError(res.data.message);
+          props.updateUser(res.data.data);
+          window.location.reload();
+        }
       })
       .catch((err) => {
-        console.log(err.message);
+        setError(err.response.data.message);
+        console.log(err.response);
       });
   };
 
@@ -33,7 +45,6 @@ function Auth(props) {
   useEffect(() => {
     checkAuth()
       .then((res) => {
-        console.log(res.data.data);
         updateUser(res.data.data);
       })
       .catch((err) => {
@@ -98,6 +109,7 @@ function Auth(props) {
               <button type="submit" className="btn btn-success">
                 Logg inn
               </button>
+              <p className="text-danger fw-bold">{error}</p>
             </div>
           </div>
         </form>
@@ -154,6 +166,7 @@ function Auth(props) {
               <button type="submit" className="btn btn-success">
                 Registrer
               </button>
+              <p className="text-danger fw-bold">{error}</p>
             </div>
           </div>
         </form>

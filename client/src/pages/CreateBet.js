@@ -38,7 +38,7 @@ function CreateBet(props) {
 
   return (
     <>
-      <Nav />
+      <Nav user={props.user} updateUser={props.updateUser} />
       <div className="container bg-dark">
         <form onSubmit={handleSubmit} id="sendBet">
           <div className="form-group py-2">

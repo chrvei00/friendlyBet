@@ -66,6 +66,7 @@ app.use(
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "http://localhost:3000"); // update to match the domain you will make the request from
   res.header("Access-Control-Allow-Credentials", true);
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
   res.header(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept"
@@ -82,7 +83,6 @@ const userRouter = require("./Routes/userRoutes");
 const adminRouter = require("./Routes/adminRoutes");
 //  Middleware
 const { checkLoggedIn, checkAdministrator } = require("./util/authMiddleware");
-const { time } = require("console");
 
 app.use("/api/user", userRouter);
 app.use("/api/bet", checkLoggedIn, betRouter);
