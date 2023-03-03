@@ -51,7 +51,7 @@ app.use(
   session({
     name: COOKIE_NAME,
     secret: SESS_SECRET,
-    resave: true,
+    resave: false,
     saveUninitialized: false,
     store: mongoDBstore,
     cookie: {
@@ -62,14 +62,31 @@ app.use(
   })
 );
 
+//Headers
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "http://localhost:3000"); // update to match the domain you will make the request from
+  res.header("Access-Control-Allow-Credentials", true);
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  next();
+});
+
 // Have Node serve the files for our built React app
 app.use(express.static(path.resolve(__dirname, "../client/build")));
 
 //api-calls
 const betRouter = require("./Routes/betRoutes");
 const userRouter = require("./Routes/userRoutes");
-app.use("/api/bet", betRouter);
+const adminRouter = require("./Routes/adminRoutes");
+//  Middleware
+const { checkLoggedIn, checkAdministrator } = require("./util/authMiddleware");
+const { time } = require("console");
+
 app.use("/api/user", userRouter);
+app.use("/api/bet", checkLoggedIn, betRouter);
+app.use("/api/admin", checkLoggedIn, checkAdministrator, adminRouter);
 
 // Handle all other GET-reqs
 app.get("*", (req, res) => {

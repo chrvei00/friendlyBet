@@ -9,19 +9,19 @@ exports.getAllBets = async (req, res) => {
   }
 };
 
-exports.createBet = async (req, res) => {
+exports.getBetById = async (req, res) => {
   try {
-    const bet = await betService.createBet(req.body);
-    bet.author = req.session.user.username;
+    const bet = await betService.getBetById(req.params.id);
     res.json({ data: bet, status: "success" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
 
-exports.getBetById = async (req, res) => {
+exports.createBet = async (req, res) => {
   try {
-    const bet = await betService.getBetById(req.params.id);
+    const bet = await betService.createBet(req.body);
+    bet.author = req.session.user.username;
     res.json({ data: bet, status: "success" });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -60,24 +60,6 @@ exports.placeBet = async (req, res) => {
     }
   } catch (err) {
     console.log(err.message);
-    res.status(500).json({ error: err.message });
-  }
-};
-
-exports.getBetById = async (req, res) => {
-  try {
-    const bet = await betService.getBetById(req.params.id);
-    res.json({ data: bet, status: "success" });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
-
-exports.deleteBet = async (req, res) => {
-  try {
-    const bet = await betService.deleteBet(req.params.id);
-    res.json({ data: bet, status: "success" });
-  } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };

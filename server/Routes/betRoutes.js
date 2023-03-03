@@ -5,12 +5,12 @@ const {
   createBet,
   getBetById,
   placeBet,
-  deleteBet,
 } = require("../Controllers/betController");
 
 const router = express.Router();
 
 router.route("/").get(getAllBets).post(createBet);
-router.route("/placeBet/:id").get(getBetById).post(placeBet).delete(deleteBet);
+router.route("/getbet/:id").get(getBetById);
+router.route("/placeBet/:id").get(getBetById);
 
 module.exports = router;

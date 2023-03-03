@@ -1,36 +1,71 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
+const { login, register, checkAuth } = require("../util/api");
 
 function Auth(props) {
+  const { updateUser } = props;
+  const handleLogin = (e) => {
+    e.preventDefault();
+    login({ username: username, password: password })
+      .then((res) => {
+        props.updateUser(res.data.data);
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+  };
+
+  const handleRegister = (e) => {
+    e.preventDefault();
+    register({ username: username, password: password })
+      .then((res) => {
+        props.updateUser(res.data.data);
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+  };
+
   const [authMode, setAuthMode] = useState(true);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+
+  useEffect(() => {
+    checkAuth()
+      .then((res) => {
+        console.log(res.data.data);
+        updateUser(res.data.data);
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+  }, [updateUser]);
 
   function changeAuthMode() {
     setAuthMode(!authMode);
   }
 
-  const handleLogin = (e) => {
-    e.preventDefault();
-    props.handleLogin(username, password);
-  };
-  const handleRegister = (e) => {
-    e.preventDefault();
-    props.handleRegister(username, password);
-  };
-
   if (props.user) {
     return <Navigate to="/bets" />;
   } else if (authMode) {
     return (
-      <div className="Auth-form-container">
-        <form onSubmit={(e) => handleLogin(e)} className="Auth-form">
-          <div className="Auth-form-content">
-            <h3 className="Auth-form-title">Logg inn</h3>
+      <div
+        className="container-fluid bg-dark text-white bg-opacity-75"
+        style={{
+          maxWidth: 350,
+          borderRadius: 10,
+          marginTop: 100,
+          padding: 20,
+          position: "relative",
+        }}
+      >
+        <form onSubmit={(e) => handleLogin(e)}>
+          <div>
+            <h3 className="text-center">Logg inn</h3>
             <div className="text-center">
               Ny?{" "}
-              <span className="link-primary" onClick={changeAuthMode}>
-                registrer
+              <span className="link-danger" onClick={changeAuthMode}>
+                Registrer deg
               </span>
             </div>
             <div className="form-group mt-3">
@@ -60,8 +95,8 @@ function Auth(props) {
               />
             </div>
             <div className="d-grid gap-2 mt-3">
-              <button type="submit" className="btn btn-primary">
-                dønski
+              <button type="submit" className="btn btn-success">
+                Logg inn
               </button>
             </div>
           </div>
@@ -70,14 +105,23 @@ function Auth(props) {
     );
   } else {
     return (
-      <div className="Auth-form-container">
-        <form onSubmit={(e) => handleRegister(e)} className="Auth-form">
-          <div className="Auth-form-content">
-            <h3 className="Auth-form-title">Registrer deg</h3>
+      <div
+        className="container-fluid bg-dark text-white bg-opacity-50"
+        style={{
+          maxWidth: 350,
+          borderRadius: 10,
+          marginTop: 100,
+          padding: 20,
+          position: "relative",
+        }}
+      >
+        <form onSubmit={(e) => handleRegister(e)}>
+          <div>
+            <h3 className="text-center">Registrer deg</h3>
             <div className="text-center">
               Har du bruker?{" "}
-              <span className="link-primary" onClick={changeAuthMode}>
-                logg inn
+              <span className="link-danger" onClick={changeAuthMode}>
+                Logg inn
               </span>
             </div>
             <div className="form-group mt-3">
@@ -90,11 +134,11 @@ function Auth(props) {
                 required
                 type="text"
                 className="form-control mt-1"
-                placeholder="e.g Hugh Hefner"
+                placeholder="Fyll inn namn"
               />
             </div>
             <div className="form-group mt-3">
-              <label>Hemmelig ord - obs! passord blir ikke hashet </label>
+              <label>Hemmelig ord</label>
               <input
                 onChange={(event) => {
                   setPassword(event.target.value);
@@ -103,12 +147,12 @@ function Auth(props) {
                 required
                 type="password"
                 className="form-control mt-1"
-                placeholder="passord blir ikke hashet"
+                placeholder="Fyll inn passord"
               />
             </div>
             <div className="d-grid gap-2 mt-3">
-              <button type="submit" className="btn btn-primary">
-                dønski
+              <button type="submit" className="btn btn-success">
+                Registrer
               </button>
             </div>
           </div>

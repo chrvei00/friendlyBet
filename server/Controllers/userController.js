@@ -1,7 +1,6 @@
 const user = require("../models/user");
 const userService = require("../services/userService");
 const bcrypt = require("bcrypt");
-const { sessionizeUser } = require("../util/authUtil");
 
 exports.getAllUsers = async (req, res) => {
   try {
@@ -71,7 +70,7 @@ exports.deleteUser = async (req, res) => {
 exports.auth = async (req, res) => {
   try {
     const { username, password } = req.body;
-    user.findOne({ username: username }).then(async (user) => {
+    userService.getUserByName(username).then(async (user) => {
       if (!user) {
         return res.status(400).json({ message: "Profil finnes ikke" });
       } else if (!(await bcrypt.compare(password, user.password))) {
@@ -91,7 +90,7 @@ exports.auth = async (req, res) => {
 exports.authCheck = async (req, res) => {
   const sessUser = req.session.user;
   if (sessUser) {
-    return res.status(201).json({ data: user, message: "success" });
+    return res.status(201).json({ data: sessUser, message: "success" });
   } else {
     return res.status(401).json({ message: "!success" });
   }

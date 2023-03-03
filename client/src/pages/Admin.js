@@ -1,7 +1,7 @@
 import { React } from "react";
 import Nav from "../components/Nav";
 
-function Leaderbaord(props) {
+function Admin(props) {
   return (
     <>
       <Nav />
@@ -12,4 +12,4 @@ function Leaderbaord(props) {
   );
 }
 
-export default Leaderbaord;
+export default Admin;
