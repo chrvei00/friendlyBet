@@ -1,25 +1,84 @@
-// client/src/App.js
-
-import React from "react";
-import logo from "./logo.svg";
-import "./App.css";
+import "bootstrap/dist/css/bootstrap.min.css";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { ProtectedRouteUser, ProtectedRouteAdmin } from "./util/auth";
+import { useState } from "react";
+import Auth from "./pages/Auth";
+import Bets from "./pages/Bets";
+import CreateBet from "./pages/CreateBet";
+import Leaderbaord from "./pages/Leaderboard";
+import Admin from "./pages/Admin";
 
 function App() {
-  const [data, setData] = React.useState(null);
+  const [user, setUser] = useState(null);
+  const [bets, setBets] = useState([]);
 
-  React.useEffect(() => {
-    fetch("/api")
-      .then((res) => res.json())
-      .then((data) => setData(data.message));
-  }, []);
+  const updateUser = (user) => {
+    setUser(user);
+  };
+
+  const updateBets = (bets) => {
+    setBets(bets);
+  };
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>{!data ? "Loading..." : data}</p>
-      </header>
-    </div>
+    <>
+      <BrowserRouter>
+        <Routes>
+          <Route
+            path="/"
+            element={<Auth user={user} updateUser={updateUser} />}
+          />
+          <Route element={<ProtectedRouteUser user={user} />}>
+            <Route
+              path="/bets"
+              element={
+                <Bets
+                  user={user}
+                  updateUser={updateUser}
+                  bets={bets}
+                  updateBets={updateBets}
+                />
+              }
+            />
+            <Route
+              path="/createbet"
+              element={
+                <CreateBet
+                  user={user}
+                  updateUser={updateUser}
+                  bets={bets}
+                  updateBets={updateBets}
+                />
+              }
+            />
+            <Route
+              path="/leaderboard"
+              element={
+                <Leaderbaord
+                  user={user}
+                  updateUser={updateUser}
+                  bets={bets}
+                  updateBets={updateBets}
+                />
+              }
+            />
+            <Route element={<ProtectedRouteAdmin user={user} />}>
+              <Route
+                path="/admin"
+                element={
+                  <Admin
+                    user={user}
+                    updateUser={updateUser}
+                    bets={bets}
+                    updateBets={updateBets}
+                  />
+                }
+              />
+            </Route>
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </>
   );
 }
 

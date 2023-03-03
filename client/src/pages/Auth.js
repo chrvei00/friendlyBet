@@ -1,0 +1,165 @@
+import { useEffect, useState } from "react";
+import { Navigate } from "react-router-dom";
+const { login, register, checkAuth } = require("../util/api");
+
+function Auth(props) {
+  const { updateUser } = props;
+  const handleLogin = (e) => {
+    e.preventDefault();
+    login({ username: username, password: password })
+      .then((res) => {
+        props.updateUser(res.data.data);
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+  };
+
+  const handleRegister = (e) => {
+    e.preventDefault();
+    register({ username: username, password: password })
+      .then((res) => {
+        props.updateUser(res.data.data);
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+  };
+
+  const [authMode, setAuthMode] = useState(true);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  useEffect(() => {
+    checkAuth()
+      .then((res) => {
+        console.log(res.data.data);
+        updateUser(res.data.data);
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+  }, [updateUser]);
+
+  function changeAuthMode() {
+    setAuthMode(!authMode);
+  }
+
+  if (props.user) {
+    return <Navigate to="/bets" />;
+  } else if (authMode) {
+    return (
+      <div
+        className="container-fluid bg-dark text-white bg-opacity-75"
+        style={{
+          maxWidth: 350,
+          borderRadius: 10,
+          marginTop: 100,
+          padding: 20,
+          position: "relative",
+        }}
+      >
+        <form onSubmit={(e) => handleLogin(e)}>
+          <div>
+            <h3 className="text-center">Logg inn</h3>
+            <div className="text-center">
+              Ny?{" "}
+              <span className="link-danger" onClick={changeAuthMode}>
+                Registrer deg
+              </span>
+            </div>
+            <div className="form-group mt-3">
+              <label>Navn</label>
+              <input
+                onChange={(event) => {
+                  setUsername(event.target.value);
+                }}
+                id="name"
+                required
+                type="text"
+                className="form-control mt-1"
+                placeholder="Fyll inn namn"
+              />
+            </div>
+            <div className="form-group mt-3">
+              <label>Hemmelig ord</label>
+              <input
+                onChange={(event) => {
+                  setPassword(event.target.value);
+                }}
+                id="password"
+                required
+                type="password"
+                className="form-control mt-1"
+                placeholder="Fyll inn passord"
+              />
+            </div>
+            <div className="d-grid gap-2 mt-3">
+              <button type="submit" className="btn btn-success">
+                Logg inn
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    );
+  } else {
+    return (
+      <div
+        className="container-fluid bg-dark text-white bg-opacity-50"
+        style={{
+          maxWidth: 350,
+          borderRadius: 10,
+          marginTop: 100,
+          padding: 20,
+          position: "relative",
+        }}
+      >
+        <form onSubmit={(e) => handleRegister(e)}>
+          <div>
+            <h3 className="text-center">Registrer deg</h3>
+            <div className="text-center">
+              Har du bruker?{" "}
+              <span className="link-danger" onClick={changeAuthMode}>
+                Logg inn
+              </span>
+            </div>
+            <div className="form-group mt-3">
+              <label>Navn</label>
+              <input
+                onChange={(event) => {
+                  setUsername(event.target.value);
+                }}
+                id="name"
+                required
+                type="text"
+                className="form-control mt-1"
+                placeholder="Fyll inn namn"
+              />
+            </div>
+            <div className="form-group mt-3">
+              <label>Hemmelig ord</label>
+              <input
+                onChange={(event) => {
+                  setPassword(event.target.value);
+                }}
+                id="password"
+                required
+                type="password"
+                className="form-control mt-1"
+                placeholder="Fyll inn passord"
+              />
+            </div>
+            <div className="d-grid gap-2 mt-3">
+              <button type="submit" className="btn btn-success">
+                Registrer
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    );
+  }
+}
+
+export default Auth;

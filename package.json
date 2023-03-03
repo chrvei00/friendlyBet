@@ -4,9 +4,10 @@
   "description": "Betting system for friendgroups, if u have any",
   "main": "index.js",
   "scripts": {
-    "start": "node server/index.js",
-    "build": "cd client && npm install && npm run build",
-    "test": "test"
+    "start-server": "cd server && npm start",
+    "start-client": "cd client && npm start",
+    "build-server": "cd server && npm install",
+    "build-client": "cd client && npm install"
   },
   "repository": {
     "type": "git",
@@ -17,11 +18,5 @@
   "bugs": {
     "url": "https://github.com/chrvei00/friendlyBet/issues"
   },
-  "homepage": "https://github.com/chrvei00/friendlyBet#readme",
-  "dependencies": {
-    "express": "^4.18.2"
-  },
-  "engines": {
-    "node": "18.13.0"
-  }
+  "homepage": "https://github.com/chrvei00/friendlyBet#readme"
 }
