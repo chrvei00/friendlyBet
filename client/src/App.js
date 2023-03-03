@@ -8,6 +8,7 @@ import Bets from "./pages/Bets";
 import CreateBet from "./pages/CreateBet";
 import Leaderbaord from "./pages/Leaderboard";
 import Admin from "./pages/Admin";
+import { checkAuth, getBets } from "./util/api";
 
 function App() {
   const updateUser = (user) => {
@@ -21,6 +22,27 @@ function App() {
   useEffect(() => {
     updateUser(JSON.parse(window.localStorage.getItem("user")));
     updateBets(JSON.parse(window.localStorage.getItem("bets")));
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      checkAuth().then((res) => {
+        if (res.data.data) {
+          updateUser(res.data.data);
+        } else {
+          updateUser(null);
+        }
+      });
+
+      getBets().then((res) => {
+        if (res.data.data) {
+          updateBets(res.data.data);
+        } else {
+          updateBets(null);
+        }
+      });
+    }, 1000);
+    return () => clearInterval(interval);
   }, []);
 
   return (

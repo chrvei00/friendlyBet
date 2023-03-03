@@ -39,10 +39,13 @@ function CreateBet(props) {
   return (
     <>
       <Nav user={props.user} updateUser={props.updateUser} />
-      <div className="container bg-dark">
+      <div
+        className="container bg-dark bg-opacity-75"
+        style={{ borderRadius: "10px" }}
+      >
         <form onSubmit={handleSubmit} id="sendBet">
           <div className="form-group py-2">
-            <label className="form-label text-light" for="title">
+            <label className="form-label text-light" htmlFor="title">
               Tittel:
             </label>
             <input
@@ -51,12 +54,12 @@ function CreateBet(props) {
               type="text"
               className="form-control"
               id="title"
-              placeholder="skriv en tittel"
+              placeholder="tittel"
             />
           </div>
           <div className="form-group py-2">
-            <label className="form-label text-light" for="description">
-              Description:
+            <label className="form-label text-light" htmlFor="description">
+              Beskrivelse:
             </label>
             <input
               value={description}
@@ -64,11 +67,11 @@ function CreateBet(props) {
               type="text"
               className="form-control"
               id="description"
-              placeholder="hva er bettet"
+              placeholder="hva er ´korrekt´"
             />
           </div>
           <div className="form-group py-2">
-            <label className="form-label text-light" for="oddsW">
+            <label className="form-label text-light" htmlFor="oddsW">
               Odds for korrekt:
             </label>
             <select
@@ -92,7 +95,7 @@ function CreateBet(props) {
             </select>
           </div>
           <div className="form-group py-2">
-            <label className="form-label text-light" for="oddsL">
+            <label className="form-label text-light" htmlFor="oddsL">
               Odds for feil:
             </label>
             <select
@@ -115,7 +118,7 @@ function CreateBet(props) {
               <option>15</option>
             </select>
           </div>
-          <button type="submit" className="btn btn-primary my-3">
+          <button type="submit" className="btn btn-success my-3">
             Send inn
           </button>
         </form>

@@ -11,6 +11,6 @@ const router = express.Router();
 
 router.route("/").get(getAllBets).post(createBet);
 router.route("/getbet/:id").get(getBetById);
-router.route("/placeBet/:id").get(getBetById);
+router.route("/placeBet/:id").get(placeBet);
 
 module.exports = router;
