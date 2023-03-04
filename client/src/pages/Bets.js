@@ -1,96 +1,175 @@
-import { React, useEffect } from "react";
+import { React } from "react";
 import Nav from "../components/Nav";
-import axios from "axios";
+import { placeBet } from "../util/api";
 
-const handleBet = (e) => {
+const handlePlaceBet = (e) => {
   e.preventDefault();
   const body = JSON.stringify({
+    betID: e.target.id.value,
+    winOrLose: e.target.winOrLose.value,
     amount: e.target.amount.value,
   });
-  axios
-    .post("/api/bet/placebet/" + e.target.id.value, body, {
-      headers: {
-        "Content-Type": "application/json",
-      },
+  placeBet(e.target.id.value, body)
+    .then((res) => {
+      console.log(res);
     })
-    .then((response) => {
-      console.log(response);
-    })
-    .catch((error) => {
-      console.log(error);
+    .catch((err) => {
+      console.log(err);
     });
 };
 
 function Bets(props) {
   const { user, bets } = props;
-  let approvedBets = [];
-  let activeBets = [];
 
-  if (bets !== []) {
-    approvedBets = bets.filter((bet) => bet.approved);
-    activeBets = [];
-    for (let i = 0; i < user.activeBets.length; i++) {
-      for (let j = 0; j < approvedBets.length; j++) {
-        if (user.activeBets[i].betID === approvedBets[j]._id) {
-          activeBets.push(approvedBets[j]);
-        }
+  const showBets = () => {
+    return bets
+      ? bets
+          .filter((bet) => {
+            return bet.approved && !bet.finished;
+          })
+          .map((bet) => (
+            <div key={bet._id} className="container py-3">
+              <div className="card">
+                <div className="card-body">
+                  <h5 className="card-title fw-bold">{bet.title}</h5>
+                  <h6 className="card-subtitle text-muted pb-3">
+                    Laget av: {bet.author}
+                  </h6>
+                  <div className="row py-3">
+                    <p className="card-text">{bet.description}</p>
+                  </div>
+                  <div className="row py-1">
+                    <h6 className="fw-bold">Odds: </h6>
+                  </div>
+                  <div className="row pb-3">
+                    <div className="col-3">
+                      <p className="card-text">Inntreffer: {bet.oddsW}</p>
+                    </div>
+                    <div className="col">
+                      <p className="card-text">Ikke inntreffer: {bet.oddsL}</p>
+                    </div>
+                  </div>
+                  <p className="card-text fw-bold">Deadline: {bet.deadline}</p>
+                  <form
+                    onSubmit={(e) => {
+                      handlePlaceBet(e);
+                    }}
+                    className="row bg-light g-3 pt-3"
+                  >
+                    <div className="row">
+                      <div className="form-check">
+                        <input
+                          className="form-check-input"
+                          type="radio"
+                          name="winOrLose"
+                          id="win"
+                          value={true}
+                          disabled={Date.parse(bet.deadline) > Date.now()}
+                        />
+                        <label className="form-check-label" htmlFor="win">
+                          Inntreffer
+                        </label>
+                      </div>
+                      <div className="form-check">
+                        <input
+                          className="form-check-input"
+                          type="radio"
+                          name="winOrLose"
+                          id="lose"
+                          value={false}
+                          disabled={Date.parse(bet.deadline) > Date.now()}
+                        />
+                        <label className="form-check-label" htmlFor="lose">
+                          Ikke inntreffer
+                        </label>
+                      </div>
+                    </div>
+                    <label htmlFor="amount" className="form-label">
+                      Hvor mye vil du satse?
+                    </label>
+                    <input
+                      type="number"
+                      className="form-control"
+                      min={1}
+                      max={user.total}
+                      id="amount"
+                      disabled={Date.parse(bet.deadline) > Date.now()}
+                    />
+                    <input id="id" type="hidden" name="id" value={bet._id} />
+                    <button
+                      type="submit"
+                      className="btn btn-outline-primary"
+                      disabled={Date.parse(bet.deadline) > Date.now()}
+                    >
+                      Send inn
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          ))
+      : null;
+  };
+
+  const getBetInformartion = (betID, currentBet) => {
+    let tmp = <h1>No bet</h1>;
+    user.activeBets.forEach((bet) => {
+      if (bet.betID === betID) {
+        tmp = (
+          <div
+            className="row bg-opacity-25 pt-1"
+            style={{ borderRadius: "10px" }}
+          >
+            <div className="row pb-2">
+              <h6 className="text-muted">prediksjon:</h6>
+              <h6 className="fw-bold">
+                {bet.winOrLose
+                  ? "inntreffer: " + currentBet.oddsW
+                  : "ikke inntreffer: " + currentBet.oddsL}
+              </h6>
+            </div>
+            <div className="row pb-2">
+              <h6 className="text-muted">innsats:</h6>
+              <h6 className="fw-bold">{bet.amount}</h6>
+            </div>
+            <div>
+              <h6 className="text-muted">mulig gevinst:</h6>
+              <h6 className="fw-bold">
+                {bet.winOrLose
+                  ? currentBet.oddsW * bet.amount
+                  : currentBet.oddsL * bet.amount}
+              </h6>
+            </div>
+          </div>
+        );
       }
-    }
-  }
-
-  useEffect(() => {
-    console.log("bets updated");
-  }, [bets]);
-
-  const showBets = approvedBets
-    ? approvedBets.map((bet) => (
-        <div key={bet._id} className="container py-3">
-          <div className="card">
-            <div className="card-header">{bet.title}</div>
-            <div className="card-body">
-              <h5 className="card-title">{bet.title}</h5>
-              <p className="card-text">Beskrivelse av hva bettet er.</p>
-              <form
-                onSubmit={(e) => {
-                  handleBet(e);
-                }}
-              >
-                <input id="amount" type="number" name="amount" />
-                <input id="id" type="hidden" name="id" value={bet._id} />
-                <button type="submit" className="btn btn-primary">
-                  Send inn
-                </button>
-              </form>
+    });
+    return tmp;
+  };
+  const showUserBets = () => {
+    return bets
+      ? bets
+          .filter(
+            (bet) =>
+              user.activeBets.filter((activeBet) => activeBet.betID === bet._id)
+                .length > 0
+          )
+          .map((bet) => (
+            <div key={bet._id} className="container py-3">
+              <div className="card">
+                <div className="card-body">
+                  <h5 className="card-title fw-bold">{bet.title}</h5>
+                  <h6 className="card-subtitle text-muted pb-2">
+                    Author: {bet.author}
+                  </h6>
+                  <p className="card-text">{bet.description}</p>
+                  {getBetInformartion(bet._id, bet)}
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      ))
-    : null;
-
-  const showUserBets = activeBets
-    ? activeBets.map((bet) => (
-        <div key={bet._id} className="container py-3">
-          <div className="card">
-            <div className="card-header">{bet.title}</div>
-            <div className="card-body">
-              <h5 className="card-title">{bet.title}</h5>
-              <p className="card-text">Beskrivelse av hva bettet er.</p>
-              <form
-                onSubmit={(e) => {
-                  handleBet(e);
-                }}
-              >
-                <input id="amount" type="number" name="amount" />
-                <input id="id" type="hidden" name="id" value={bet._id} />
-                <button type="submit" className="btn btn-primary">
-                  Send inn
-                </button>
-              </form>
-            </div>
-          </div>
-        </div>
-      ))
-    : null;
+          ))
+      : null;
+  };
 
   return (
     <>
@@ -107,13 +186,13 @@ function Bets(props) {
         <div className="card mb-2">
           <div className="card-header">
             <h1 className="fw-bold">Dine bets</h1>
-            {showUserBets}
+            {showUserBets()}
           </div>
         </div>
         <div className="card mb-2 mt-4">
           <div className="card-header">
             <h1 className="fw-bold">Alle bets</h1>
-            {showBets}
+            {showBets()}
           </div>
         </div>
       </div>

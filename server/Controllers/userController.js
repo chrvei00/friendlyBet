@@ -104,3 +104,13 @@ exports.logout = async (req, res) => {
     res.send("Logget ut.");
   });
 };
+
+exports.getLeaderboard = async (req, res) => {
+  try {
+    const users = await userService.getAllUsers();
+    users.sort((a, b) => b.total - a.total);
+    res.json({ data: users, status: "success" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};

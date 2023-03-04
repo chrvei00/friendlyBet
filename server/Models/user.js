@@ -9,7 +9,7 @@ const userSchema = new Schema({
   approved: { type: Boolean, default: false },
   admin: { type: Boolean, default: false },
   total: { type: Number, default: 5000 },
-  activeBets: [{ betID: String, amount: Number }],
+  activeBets: [{ betID: String, winOrLose: Boolean, amount: Number }],
   prevBets: [{ betID: String, amount: Number }],
 });
 

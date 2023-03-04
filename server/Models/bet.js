@@ -8,6 +8,7 @@ const betSchema = new Schema({
   oddsL: Number,
   description: String,
   author: String,
+  deadline: Date,
   approved: { type: Boolean, default: false },
   winOrLoss: { type: Boolean, default: false },
   finished: { type: Boolean, default: false },

@@ -85,7 +85,7 @@ const adminRouter = require("./Routes/adminRoutes");
 const { checkLoggedIn, checkAdministrator } = require("./util/authMiddleware");
 
 app.use("/api/user", userRouter);
-app.use("/api/bet", checkLoggedIn, betRouter);
+app.use("/api/bet", betRouter);
 app.use("/api/admin", checkLoggedIn, checkAdministrator, adminRouter);
 
 // Handle all other GET-reqs

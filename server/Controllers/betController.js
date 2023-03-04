@@ -20,8 +20,15 @@ exports.getBetById = async (req, res) => {
 
 exports.createBet = async (req, res) => {
   try {
-    const bet = await betService.createBet(req.body);
-    bet.author = req.session.user.username;
+    const { title, oddsW, oddsL, description, deadline } = req.body;
+    const bet = await betService.createBet({
+      title: title,
+      oddsW: oddsW,
+      oddsL: oddsL,
+      description: description,
+      deadline: deadline,
+      author: req.session.user.username,
+    });
     res.json({ data: bet, status: "success" });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -54,8 +61,10 @@ exports.placeBet = async (req, res) => {
       const user = await betService.placeBet(
         req.params.id,
         req.body.amount,
+        req.body.winOrLose,
         req.session.user
       );
+      req.session.user = user;
       res.json({ data: user, status: "success" });
     }
   } catch (err) {

@@ -1,39 +1,35 @@
 import { useState } from "react";
 import Nav from "../components/Nav";
+import { createBet } from "../util/api";
 
 function CreateBet(props) {
   // eslint-disable-next-line
   const [title, setTitle] = useState("");
-  const [oddsW = 1.5, setOddsW] = useState("");
-  const [oddsL = 1.5, setOddsL] = useState("");
+  const [oddsW, setOddsW] = useState(1.5);
+  const [oddsL, setOddsL] = useState(1.5);
   const [description, setDescription] = useState("");
+  const [deadline, setDeadline] = useState(Date.now() + 1000 * 60 * 60 * 2);
 
   let handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      let res = await fetch("/api/bet", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          title: title,
-          oddsW: oddsW,
-          oddsL: oddsL,
-          description: description,
-          author: props.user.name,
-        }),
+    createBet(
+      JSON.stringify({
+        title: title,
+        oddsW: oddsW,
+        oddsL: oddsL,
+        description: description,
+        deadline: deadline,
+      })
+    )
+      .then((res) => {
+        if (res.status === 200) {
+          console.log("success");
+          window.location.reload();
+        }
+      })
+      .catch((err) => {
+        console.log(err);
       });
-      await res.json();
-      if (res.status === 200) {
-        setTitle("Bet sendt inn");
-        setOddsW("");
-        setOddsL("U");
-        setDescription("");
-      } else {
-        setTitle("Some error occured");
-      }
-    } catch (err) {
-      console.log(err);
-    }
   };
 
   return (
@@ -117,6 +113,20 @@ function CreateBet(props) {
               <option>9</option>
               <option>15</option>
             </select>
+          </div>
+          <div className="form-group py-2">
+            <label className="form-label text-light" htmlFor="oddsL">
+              Frist for å spille:
+            </label>
+            <input
+              type="datetime-local"
+              className="form-control"
+              id="deadline"
+              defaultValue={deadline}
+              onChange={(e) => {
+                setDeadline(e.target.value);
+              }}
+            />
           </div>
           <button type="submit" className="btn btn-success my-3">
             Send inn

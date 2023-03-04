@@ -8,7 +8,7 @@ import Bets from "./pages/Bets";
 import CreateBet from "./pages/CreateBet";
 import Leaderbaord from "./pages/Leaderboard";
 import Admin from "./pages/Admin";
-import { checkAuth, getBets } from "./util/api";
+import { checkAuth, getBets, getLeaderboard } from "./util/api";
 
 function App() {
   const updateUser = (user) => {
@@ -19,29 +19,103 @@ function App() {
     window.localStorage.setItem("bets", JSON.stringify(bets));
   };
 
-  useEffect(() => {
-    updateUser(JSON.parse(window.localStorage.getItem("user")));
-    updateBets(JSON.parse(window.localStorage.getItem("bets")));
-  }, []);
+  const updateLeaderboard = (leaderboard) => {
+    window.localStorage.setItem("leaderboard", JSON.stringify(leaderboard));
+  };
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      checkAuth().then((res) => {
+    if (!window.localStorage.getItem("user")) {
+      updateUser(null);
+    }
+
+    if (!window.localStorage.getItem("bets")) {
+      updateBets([]);
+    }
+
+    if (!window.localStorage.getItem("leaderboard")) {
+      updateLeaderboard([]);
+    }
+
+    checkAuth()
+      .then((res) => {
         if (res.data.data) {
           updateUser(res.data.data);
         } else {
           updateUser(null);
         }
+      })
+      .catch((err) => {
+        //Do nothing
       });
 
-      getBets().then((res) => {
+    getBets()
+      .then((res) => {
         if (res.data.data) {
           updateBets(res.data.data);
         } else {
           updateBets(null);
         }
+      })
+      .catch((err) => {
+        console.log(err);
       });
-    }, 1000);
+
+    getLeaderboard()
+      .then((res) => {
+        if (res.data.data) {
+          updateLeaderboard(res.data.data);
+        } else {
+          updateLeaderboard(null);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      console.log("Checking auth, bets and leaderboard...");
+      checkAuth()
+        .then((res) => {
+          if (res.data.data) {
+            updateUser(res.data.data);
+          } else {
+            updateUser(null);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          if (err.status === 401) {
+            updateUser(null);
+          }
+          //Do nothing
+        });
+
+      getBets()
+        .then((res) => {
+          if (res.data.data) {
+            updateBets(res.data.data);
+          } else {
+            updateBets(null);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+
+      getLeaderboard()
+        .then((res) => {
+          if (res.data.data) {
+            updateLeaderboard(res.data.data);
+          } else {
+            updateLeaderboard(null);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }, 20000);
     return () => clearInterval(interval);
   }, []);
 
@@ -102,6 +176,9 @@ function App() {
                   updateUser={updateUser}
                   bets={JSON.parse(window.localStorage.getItem("bets"))}
                   updateBets={updateBets}
+                  leaderboard={JSON.parse(
+                    window.localStorage.getItem("leaderboard")
+                  )}
                 />
               </ProtectedRouteUser>
             }
