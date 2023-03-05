@@ -1,13 +1,48 @@
-function Navbar() {
+import React from "react";
+import { logout } from "../util/api";
+
+const handleLogout = (e, updateUser) => {
+  e.preventDefault();
+  logout()
+    .then((res) => {
+      updateUser(null);
+      window.location.reload();
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+function Navbar(props) {
+  const admin = () => {
+    if (props.user.admin) {
+      return (
+        <li className="nav-item">
+          <a
+            className={
+              window.location.pathname === "/admin"
+                ? "nav-link text-danger fw-bold"
+                : "nav-link text-danger"
+            }
+            href="/admin"
+          >
+            ADMIN
+          </a>
+        </li>
+      );
+    } else {
+      return null;
+    }
+  };
+
   return (
-    <nav className="navbar navbar-expand-lg bg-body-tertiary navbar-dark bg-dark mb-3">
+    <nav className="navbar sticky-top navbar-expand-sm bg-body-tertiary navbar-dark bg-dark mb-3">
       <div className="container-fluid">
         <a className="navbar-brand" href="/bets">
-          firendlyBet
+          <h3>friendlyBet</h3>
         </a>
         <button
           className="navbar-toggler"
-          type="button"
           data-bs-toggle="collapse"
           data-bs-target="#navbarSupportedContent"
           aria-controls="navbarSupportedContent"
@@ -19,13 +54,25 @@ function Navbar() {
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li className="nav-item">
-              <a className="nav-link active" aria-current="page" href="/bets">
+              <a
+                className={
+                  window.location.pathname === "/bets"
+                    ? "nav-link active"
+                    : "nav-link"
+                }
+                aria-current="page"
+                href="/bets"
+              >
                 Bets
               </a>
             </li>
             <li className="nav-item">
               <a
-                className="nav-link active"
+                className={
+                  window.location.pathname === "/createbet"
+                    ? "nav-link active"
+                    : "nav-link"
+                }
                 aria-current="page"
                 href="/createbet"
               >
@@ -33,11 +80,42 @@ function Navbar() {
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="/leaderboard">
+              <a
+                className={
+                  window.location.pathname === "/leaderboard"
+                    ? "nav-link active"
+                    : "nav-link"
+                }
+                href="/leaderboard"
+              >
                 Leaderboard
               </a>
             </li>
+            <li>
+              <a
+                className={
+                  window.location.pathname === "/profile"
+                    ? "nav-link active"
+                    : "nav-link"
+                }
+                href="/profile"
+              >
+                {props.user.username} ({props.user.total})
+              </a>
+            </li>
+            {admin()}
           </ul>
+          <form className="d-flex">
+            <button
+              className="btn btn-outline-danger"
+              type="submit"
+              onClick={(e) => {
+                handleLogout(e, props.updateUser);
+              }}
+            >
+              Logout
+            </button>
+          </form>
         </div>
       </div>
     </nav>

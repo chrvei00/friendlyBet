@@ -42,7 +42,7 @@ exports.createUser = async (req, res) => {
       req.session.user = await userService.createUser(
         new user({ username: username, password: hashedPwd })
       );
-      res.status(200).json({ data: req.session.user, message: "user created" });
+      res.status(201).json({ data: req.session.user, message: "user created" });
     }
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -79,7 +79,7 @@ exports.auth = async (req, res) => {
           .json({ message: "Profil matcher ikke passordet" });
       } else {
         req.session.user = user;
-        return res.status(200).json({ data: user, message: "Logget inn." });
+        return res.status(201).json({ data: user, message: "Logget inn." });
       }
     });
   } catch (error) {
@@ -90,9 +90,10 @@ exports.auth = async (req, res) => {
 exports.authCheck = async (req, res) => {
   const sessUser = req.session.user;
   if (sessUser) {
-    return res.status(201).json({ data: sessUser, message: "success" });
+    const user = await userService.getUserByName(sessUser.username);
+    return res.status(201).json({ data: user, message: "success" });
   } else {
-    return res.status(401).json({ message: "!success" });
+    return res.status(401).json({ message: "Ikke autorisert" });
   }
 };
 
@@ -103,4 +104,14 @@ exports.logout = async (req, res) => {
     res.clearCookie("session-id"); // clear cookie
     res.send("Logget ut.");
   });
+};
+
+exports.getLeaderboard = async (req, res) => {
+  try {
+    const users = await userService.getAllUsers();
+    users.sort((a, b) => b.total - a.total);
+    res.json({ data: users, status: "success" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };

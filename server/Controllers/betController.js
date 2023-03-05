@@ -1,4 +1,5 @@
 const betService = require("../services/betService");
+const userService = require("../services/userService");
 
 exports.getAllBets = async (req, res) => {
   try {
@@ -20,8 +21,15 @@ exports.getBetById = async (req, res) => {
 
 exports.createBet = async (req, res) => {
   try {
-    const bet = await betService.createBet(req.body);
-    bet.author = req.session.user.username;
+    const { title, oddsW, oddsL, description, deadline } = req.body;
+    const bet = await betService.createBet({
+      title: title,
+      oddsW: oddsW,
+      oddsL: oddsL,
+      description: description,
+      deadline: deadline,
+      author: req.session.user.username,
+    });
     res.json({ data: bet, status: "success" });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -48,18 +56,47 @@ exports.deleteBet = async (req, res) => {
 
 exports.placeBet = async (req, res) => {
   try {
-    if (req.session.user.totalBalance < req.body.amount) {
+    const { amount, winOrLose } = req.body;
+    const id = req.params.id;
+    const user = req.session.user;
+    console.log(user);
+
+    if (!amount || !winOrLose || !id || !user) {
+      return res.status(400).json({ message: "missing data" });
+    } else if (user.total < amount) {
       return res.status(400).json({ message: "not enough money" });
     } else {
-      const user = await betService.placeBet(
-        req.params.id,
-        req.body.amount,
-        req.session.user
-      );
-      res.json({ data: user, status: "success" });
+      const newUser = await betService.placeBet(id, amount, winOrLose, user);
+      req.session.user = newUser;
+      res.json({ data: newUser, status: "success" });
     }
   } catch (err) {
     console.log(err.message);
+    res.status(500).json({ error: err.message });
+  }
+};
+
+exports.closeBet = async (req, res) => {
+  try {
+    const bet = req.body;
+    await userService.getAllUsers().then((users) => {
+      users.forEach((user) => {
+        user.activeBets.forEach(async (activeBet) => {
+          if (
+            activeBet.betID === bet._id &&
+            activeBet.winOrLose === bet.winOrLose
+          ) {
+            bet.winOrLose
+              ? (user.total += activeBet.amount * bet.oddsW)
+              : (user.total += activeBet.amount * bet.oddsL);
+            await userService.updateUser(user._id, user);
+          }
+        });
+      });
+    });
+    const newBet = await betService.updateBet(req.params.id, bet);
+    res.json({ data: newBet, status: "success" });
+  } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };

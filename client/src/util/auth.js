@@ -1,17 +1,20 @@
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate } from "react-router-dom";
+import NotApproved from "../pages/NotApproved";
 
-export const ProtectedRouteUser = ({ user, redirectPath = "/" }) => {
-  if (!user) {
-    return <Navigate to={redirectPath} replace />;
+export const ProtectedRouteUser = (props) => {
+  if (!props.user) {
+    return <Navigate to={"/"} replace />;
+  } else if (!props.user.approved) {
+    return <NotApproved user={props.user} updateUser={props.updateUser} />;
   }
 
-  return <Outlet />;
+  return props.children;
 };
 
-export const ProtectedRouteAdmin = ({ user, redirectPath = "/bets" }) => {
-  if (!user || !user.admin) {
-    return <Navigate to={redirectPath} replace />;
+export const ProtectedRouteAdmin = (props) => {
+  if (!props.user || !props.user.admin) {
+    return <Navigate to={"/"} replace />;
   }
 
-  return <Outlet />;
+  return props.children;
 };

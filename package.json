@@ -18,5 +18,10 @@
   "bugs": {
     "url": "https://github.com/chrvei00/friendlyBet/issues"
   },
-  "homepage": "https://github.com/chrvei00/friendlyBet#readme"
+  "homepage": "https://github.com/chrvei00/friendlyBet#readme",
+  "dependencies": {
+    "@popperjs/core": "^2.11.6",
+    "bootstrap": "^5.2.3",
+    "jquery": "^3.6.3"
+  }
 }
