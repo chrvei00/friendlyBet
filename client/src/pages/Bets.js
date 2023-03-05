@@ -1,25 +1,39 @@
-import { React } from "react";
+import React, { useState } from "react";
 import Nav from "../components/Nav";
 import { placeBet } from "../util/api";
 
-const handlePlaceBet = (e) => {
-  e.preventDefault();
-  const body = JSON.stringify({
-    betID: e.target.id.value,
-    winOrLose: e.target.winOrLose.value,
-    amount: e.target.amount.value,
-  });
-  placeBet(e.target.id.value, body)
-    .then((res) => {
-      console.log(res);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-};
-
 function Bets(props) {
   const { user, bets } = props;
+
+  const [responseMessage, setResponseMessage] = useState(null);
+
+  const [hideUserBets, setHideUserBets] = useState(false);
+  const [hideAllBets, setHideAllBets] = useState(true);
+
+  const handlePlaceBet = (e) => {
+    e.preventDefault();
+
+    const betID = e.target.id.value;
+    const winOrLose = e.target.winOrLose.value;
+    const amount = e.target.amount.value;
+
+    if (!betID || !winOrLose || !amount) {
+      setResponseMessage("Alle felt må fylles ut");
+      return;
+    }
+    const body = JSON.stringify({
+      betID: e.target.id.value,
+      winOrLose: e.target.winOrLose.value,
+      amount: e.target.amount.value,
+    });
+    placeBet(e.target.id.value, body)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   const showBets = () => {
     return bets
@@ -29,7 +43,7 @@ function Bets(props) {
           })
           .map((bet) => (
             <div key={bet._id} className="container py-3">
-              <div className="card">
+              <div className="card text-bg-light bg-opacity-75">
                 <div className="card-body">
                   <h5 className="card-title fw-bold">{bet.title}</h5>
                   <h6 className="card-subtitle text-muted pb-3">
@@ -50,60 +64,57 @@ function Bets(props) {
                     </div>
                   </div>
                   <p className="card-text fw-bold">Deadline: {bet.deadline}</p>
-                  <form
-                    onSubmit={(e) => {
-                      handlePlaceBet(e);
-                    }}
-                    className="row bg-light g-3 pt-3"
-                  >
-                    <div className="row">
-                      <div className="form-check">
-                        <input
-                          className="form-check-input"
-                          type="radio"
-                          name="winOrLose"
-                          id="win"
-                          value={true}
-                          disabled={Date.parse(bet.deadline) > Date.now()}
-                        />
-                        <label className="form-check-label" htmlFor="win">
-                          Inntreffer
-                        </label>
-                      </div>
-                      <div className="form-check">
-                        <input
-                          className="form-check-input"
-                          type="radio"
-                          name="winOrLose"
-                          id="lose"
-                          value={false}
-                          disabled={Date.parse(bet.deadline) > Date.now()}
-                        />
-                        <label className="form-check-label" htmlFor="lose">
-                          Ikke inntreffer
-                        </label>
-                      </div>
-                    </div>
-                    <label htmlFor="amount" className="form-label">
-                      Hvor mye vil du satse?
-                    </label>
-                    <input
-                      type="number"
-                      className="form-control"
-                      min={1}
-                      max={user.total}
-                      id="amount"
-                      disabled={Date.parse(bet.deadline) > Date.now()}
-                    />
-                    <input id="id" type="hidden" name="id" value={bet._id} />
-                    <button
-                      type="submit"
-                      className="btn btn-outline-primary"
-                      disabled={Date.parse(bet.deadline) > Date.now()}
+                  {Date.parse(bet.deadline) > Date.now() ? (
+                    <form
+                      onSubmit={(e) => {
+                        handlePlaceBet(e);
+                      }}
+                      className="row g-3 pt-3"
                     >
-                      Send inn
-                    </button>
-                  </form>
+                      <div className="row">
+                        <div className="form-check">
+                          <input
+                            className="form-check-input"
+                            type="radio"
+                            name="winOrLose"
+                            id="win"
+                            value={true}
+                          />
+                          <label className="form-check-label" htmlFor="win">
+                            Inntreffer
+                          </label>
+                        </div>
+                        <div className="form-check">
+                          <input
+                            className="form-check-input"
+                            type="radio"
+                            name="winOrLose"
+                            id="lose"
+                            value={false}
+                          />
+                          <label className="form-check-label" htmlFor="lose">
+                            Ikke inntreffer
+                          </label>
+                        </div>
+                      </div>
+                      <label htmlFor="amount" className="form-label">
+                        Hvor mye vil du satse?
+                      </label>
+                      <input
+                        type="number"
+                        className="form-control"
+                        min={1}
+                        max={user.total}
+                        id="amount"
+                      />
+                      <input id="id" type="hidden" name="id" value={bet._id} />
+                      <button type="submit" className="btn btn-outline-primary">
+                        Send inn
+                      </button>
+                    </form>
+                  ) : (
+                    <p className="text-danger fw-bold pt-3">Deadline passert</p>
+                  )}
                 </div>
               </div>
             </div>
@@ -156,7 +167,7 @@ function Bets(props) {
           )
           .map((bet) => (
             <div key={bet._id} className="container py-3">
-              <div className="card">
+              <div className="card text-bg-light bg-opacity-75">
                 <div className="card-body">
                   <h5 className="card-title fw-bold">{bet.title}</h5>
                   <h6 className="card-subtitle text-muted pb-2">
@@ -182,17 +193,36 @@ function Bets(props) {
           </div>
         </div>
       </div>
-      <div className="container-md">
-        <div className="card mb-2">
-          <div className="card-header">
-            <h1 className="fw-bold">Dine bets</h1>
-            {showUserBets()}
+      {responseMessage !== null ? (
+        <div className="container">
+          <div className="alert alert-danger py-2" role="alert">
+            {responseMessage}
           </div>
         </div>
-        <div className="card mb-2 mt-4">
+      ) : null}
+      <div className="container-md">
+        <div className="card text-bg-light bg-opacity-50 mb-2">
+          <div className="card-header">
+            <h1 className="fw-bold">Dine bets</h1>
+            <button
+              className="btn btn-primary"
+              onClick={() => setHideUserBets(!hideUserBets)}
+            >
+              {hideUserBets ? "Show" : "Hide"}
+            </button>
+            {!hideUserBets ? showUserBets() : null}
+          </div>
+        </div>
+        <div className="card text-bg-light bg-opacity-50 mb-2 mt-4">
           <div className="card-header">
             <h1 className="fw-bold">Alle bets</h1>
-            {showBets()}
+            <button
+              className="btn btn-primary"
+              onClick={() => setHideAllBets(!hideAllBets)}
+            >
+              {hideAllBets ? "Show" : "Hide"}
+            </button>
+            {!hideAllBets ? showBets() : null}
           </div>
         </div>
       </div>

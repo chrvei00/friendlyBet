@@ -2,7 +2,6 @@ import React from "react";
 import { logout } from "../util/api";
 
 const handleLogout = (e, updateUser) => {
-  console.log("logout");
   e.preventDefault();
   logout()
     .then((res) => {
@@ -10,7 +9,7 @@ const handleLogout = (e, updateUser) => {
       window.location.reload();
     })
     .catch((err) => {
-      console.log(err.message);
+      console.log(err);
     });
 };
 
@@ -22,7 +21,7 @@ function Navbar(props) {
           <a
             className={
               window.location.pathname === "/admin"
-                ? "nav-link text-danger active"
+                ? "nav-link text-danger fw-bold"
                 : "nav-link text-danger"
             }
             href="/admin"
@@ -90,6 +89,18 @@ function Navbar(props) {
                 href="/leaderboard"
               >
                 Leaderboard
+              </a>
+            </li>
+            <li>
+              <a
+                className={
+                  window.location.pathname === "/profile"
+                    ? "nav-link active"
+                    : "nav-link"
+                }
+                href="/profile"
+              >
+                {props.user.username} ({props.user.total})
               </a>
             </li>
             {admin()}

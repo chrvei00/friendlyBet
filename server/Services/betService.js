@@ -22,6 +22,6 @@ exports.deleteBet = async (id) => {
 
 exports.placeBet = async (id, amount, winOrLose, user) => {
   user.activeBets.push({ betID: id, winOrLose: winOrLose, amount: amount });
-  user.total -= amount;
+  user.total = user.total - amount;
   return await userModel.findByIdAndUpdate(user._id, user, { new: true });
 };

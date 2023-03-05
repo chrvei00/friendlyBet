@@ -1,52 +1,73 @@
-import { useState } from "react";
 import Nav from "../components/Nav";
 import { createBet } from "../util/api";
+import { useState } from "react";
 
 function CreateBet(props) {
-  // eslint-disable-next-line
-  const [title, setTitle] = useState("");
-  const [oddsW, setOddsW] = useState(1.5);
-  const [oddsL, setOddsL] = useState(1.5);
-  const [description, setDescription] = useState("");
-  const [deadline, setDeadline] = useState(Date.now() + 1000 * 60 * 60 * 2);
+  const [responseMessage, setResponseMessage] = useState(null);
 
-  let handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    createBet(
-      JSON.stringify({
-        title: title,
-        oddsW: oddsW,
-        oddsL: oddsL,
-        description: description,
-        deadline: deadline,
-      })
-    )
-      .then((res) => {
-        if (res.status === 200) {
-          console.log("success");
-          window.location.reload();
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    const title = e.target.title.value;
+    const oddsW = e.target.oddsW.value;
+    const oddsL = e.target.oddsL.value;
+    const description = e.target.description.value;
+    const deadline = e.target.deadline.value;
+
+    if (!title || !oddsW || !oddsL || !description || !deadline) {
+      setResponseMessage("Alle felt må fylles ut");
+      return;
+    } else if (Date.parse(deadline) < Date.now()) {
+      setResponseMessage("Deadlinen må være i fremtiden");
+      return;
+    } else {
+      createBet(
+        JSON.stringify({
+          title: title,
+          oddsW: oddsW,
+          oddsL: oddsL,
+          description: description,
+          deadline: deadline,
+        })
+      )
+        .then((res) => {
+          if (res.status === 200) {
+            e.target.reset();
+            setResponseMessage("Sendt, venter på godkjenning fra admin");
+          }
+        })
+        .catch((err) => {
+          setResponseMessage(err.response.data.message);
+        });
+    }
   };
 
   return (
     <>
       <Nav user={props.user} updateUser={props.updateUser} />
+      {responseMessage !== null ? (
+        <div className="container">
+          <div
+            className={
+              responseMessage === "Sendt, venter på godkjenning fra admin"
+                ? "alert alert-success py-2"
+                : "alert alert-danger py-2"
+            }
+            role="alert"
+          >
+            {responseMessage}
+          </div>
+        </div>
+      ) : null}
       <div
-        className="container bg-dark bg-opacity-75"
+        className="container bg-light text-dark bg-opacity-75"
         style={{ borderRadius: "10px" }}
       >
         <form onSubmit={handleSubmit} id="sendBet">
           <div className="form-group py-2">
-            <label className="form-label text-light" htmlFor="title">
+            <label className="form-label" htmlFor="title">
               Tittel:
             </label>
             <input
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
               type="text"
               className="form-control"
               id="title"
@@ -54,12 +75,10 @@ function CreateBet(props) {
             />
           </div>
           <div className="form-group py-2">
-            <label className="form-label text-light" htmlFor="description">
+            <label className="form-label" htmlFor="description">
               Beskrivelse:
             </label>
             <input
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
               type="text"
               className="form-control"
               id="description"
@@ -67,16 +86,10 @@ function CreateBet(props) {
             />
           </div>
           <div className="form-group py-2">
-            <label className="form-label text-light" htmlFor="oddsW">
+            <label className="form-label" htmlFor="oddsW">
               Odds for korrekt:
             </label>
-            <select
-              value={oddsW}
-              onSelect={(e) => setOddsL(e.target.value)}
-              onChange={(e) => setOddsW(e.target.value)}
-              className="form-control"
-              id="oddsW"
-            >
+            <select className="form-control" id="oddsW">
               <option>1.5</option>
               <option>2</option>
               <option>2.5</option>
@@ -91,16 +104,10 @@ function CreateBet(props) {
             </select>
           </div>
           <div className="form-group py-2">
-            <label className="form-label text-light" htmlFor="oddsL">
+            <label className="form-label" htmlFor="oddsL">
               Odds for feil:
             </label>
-            <select
-              value={oddsL}
-              onSelect={(e) => setOddsL(e.target.value)}
-              onChange={(e) => setOddsL(e.target.value)}
-              className="form-control"
-              id="oddsL"
-            >
+            <select className="form-control" id="oddsL">
               <option>1.5</option>
               <option>2</option>
               <option>2.5</option>
@@ -115,17 +122,13 @@ function CreateBet(props) {
             </select>
           </div>
           <div className="form-group py-2">
-            <label className="form-label text-light" htmlFor="oddsL">
+            <label className="form-label" htmlFor="oddsL">
               Frist for å spille:
             </label>
             <input
               type="datetime-local"
               className="form-control"
               id="deadline"
-              defaultValue={deadline}
-              onChange={(e) => {
-                setDeadline(e.target.value);
-              }}
             />
           </div>
           <button type="submit" className="btn btn-success my-3">

@@ -10,7 +10,9 @@ const userSchema = new Schema({
   admin: { type: Boolean, default: false },
   total: { type: Number, default: 5000 },
   activeBets: [{ betID: String, winOrLose: Boolean, amount: Number }],
-  prevBets: [{ betID: String, amount: Number }],
+  prevBets: [
+    { betID: String, winOrLose: Boolean, amount: Number, profit: Number },
+  ],
 });
 
 module.exports = mongoose.model("user", userSchema);

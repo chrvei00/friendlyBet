@@ -75,9 +75,12 @@ function Auth(props) {
             <h3 className="text-center">Logg inn</h3>
             <div className="text-center">
               Ny?{" "}
-              <span className="link-danger" onClick={changeAuthMode}>
+              <button
+                className="btn btn-sm btn-outline-light fw-bold"
+                onClick={changeAuthMode}
+              >
                 Registrer deg
-              </span>
+              </button>
             </div>
             <div className="form-group mt-3">
               <label>Navn</label>
@@ -132,9 +135,12 @@ function Auth(props) {
             <h3 className="text-center">Registrer deg</h3>
             <div className="text-center">
               Har du bruker?{" "}
-              <span className="link-danger" onClick={changeAuthMode}>
+              <button
+                className="btn btn-sm btn-outline-light fw-bold"
+                onClick={changeAuthMode}
+              >
                 Logg inn
-              </span>
+              </button>
             </div>
             <div className="form-group mt-3">
               <label>Navn</label>

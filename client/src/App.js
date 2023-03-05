@@ -8,6 +8,7 @@ import Bets from "./pages/Bets";
 import CreateBet from "./pages/CreateBet";
 import Leaderbaord from "./pages/Leaderboard";
 import Admin from "./pages/Admin";
+import Profile from "./pages/Profile";
 import { checkAuth, getBets, getLeaderboard } from "./util/api";
 
 function App() {
@@ -86,10 +87,9 @@ function App() {
         })
         .catch((err) => {
           console.log(err);
-          if (err.status === 401) {
+          if (err.response.status === 401) {
             updateUser(null);
           }
-          //Do nothing
         });
 
       getBets()
@@ -179,6 +179,22 @@ function App() {
                   leaderboard={JSON.parse(
                     window.localStorage.getItem("leaderboard")
                   )}
+                />
+              </ProtectedRouteUser>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRouteUser
+                user={JSON.parse(window.localStorage.getItem("user"))}
+                updateUser={updateUser}
+              >
+                <Profile
+                  user={JSON.parse(window.localStorage.getItem("user"))}
+                  updateUser={updateUser}
+                  bets={JSON.parse(window.localStorage.getItem("bets"))}
+                  updateBets={updateBets}
                 />
               </ProtectedRouteUser>
             }

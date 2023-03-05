@@ -1,12 +1,24 @@
 const express = require("express");
 
-const { updateBet, deleteBet } = require("../Controllers/betController");
+const {
+  updateBet,
+  deleteBet,
+  getAllBets,
+  closeBet,
+} = require("../Controllers/betController");
 
-const { updateUser, deleteUser } = require("../Controllers/userController");
+const {
+  updateUser,
+  deleteUser,
+  getAllUsers,
+} = require("../Controllers/userController");
 
 const router = express.Router();
 
 router.route("/bet/:id").put(updateBet).delete(deleteBet);
+router.route("/bet/all").get(getAllBets);
+router.route("/bet/close/:id").put(closeBet);
 router.route("/user/:id").put(updateUser).delete(deleteUser);
+router.route("/user/all").get(getAllUsers);
 
 module.exports = router;
