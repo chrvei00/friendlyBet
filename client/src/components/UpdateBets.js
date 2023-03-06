@@ -1,5 +1,6 @@
 import { updateBet, deleteBet } from "../util/api";
 import { useState } from "react";
+import { DateFormat } from "../util/formats";
 
 function UpdateBets(props) {
   const { bets, users } = props;
@@ -104,7 +105,8 @@ function UpdateBets(props) {
                   </div>
                   <div className="py-2">
                     <h5 className="card-title fw-bold">
-                      Deadline: {bet.deadline}
+                      Deadline:
+                      <DateFormat date={bet.deadline} />
                     </h5>
                     <label>Ny deadline:</label>
                     <input

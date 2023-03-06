@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { getBets, placeBet } from "../util/api";
+import { DateFormat } from "../util/formats";
 
 function LiveBets(props) {
   const { user } = props;
@@ -90,56 +91,64 @@ function LiveBets(props) {
                     <p className="card-text">Ikke inntreffer: {bet.oddsL}</p>
                   </div>
                 </div>
-                <p className="card-text fw-bold">Deadline: {bet.deadline}</p>
+                <div className="row pb-3">
+                  <p className="fw-bold card-text">Deadline: </p>
+                  <p className="card-text">
+                    <DateFormat date={bet.deadline} />
+                  </p>
+                </div>
                 {Date.parse(bet.deadline) > Date.now() ? (
-                  <form
-                    onSubmit={(e) => {
-                      handlePlaceBet(e);
-                    }}
-                    className="row g-3 pt-3"
-                  >
-                    <div className="row">
-                      <div className="form-check">
-                        <input
-                          className="form-check-input"
-                          type="radio"
-                          name="winOrLose"
-                          id="win"
-                          value={true}
-                        />
-                        <label className="form-check-label" htmlFor="win">
-                          Inntreffer
-                        </label>
+                  <>
+                    <h5 className="card-title fw-bold">Sats: </h5>{" "}
+                    <form
+                      onSubmit={(e) => {
+                        handlePlaceBet(e);
+                      }}
+                      className="row g-3 pt-3"
+                    >
+                      <div className="row">
+                        <div className="form-check">
+                          <input
+                            className="form-check-input"
+                            type="radio"
+                            name="winOrLose"
+                            id="win"
+                            value={true}
+                          />
+                          <label className="form-check-label" htmlFor="win">
+                            Inntreffer
+                          </label>
+                        </div>
+                        <div className="form-check">
+                          <input
+                            className="form-check-input"
+                            type="radio"
+                            name="winOrLose"
+                            id="lose"
+                            value={false}
+                            required
+                          />
+                          <label className="form-check-label" htmlFor="lose">
+                            Ikke inntreffer
+                          </label>
+                        </div>
                       </div>
-                      <div className="form-check">
-                        <input
-                          className="form-check-input"
-                          type="radio"
-                          name="winOrLose"
-                          id="lose"
-                          value={false}
-                          required
-                        />
-                        <label className="form-check-label" htmlFor="lose">
-                          Ikke inntreffer
-                        </label>
-                      </div>
-                    </div>
-                    <label htmlFor="amount" className="form-label">
-                      Hvor mye vil du satse?
-                    </label>
-                    <input
-                      type="number"
-                      className="form-control"
-                      min={1}
-                      max={user.total}
-                      id="amount"
-                    />
-                    <input id="id" type="hidden" name="id" value={bet._id} />
-                    <button type="submit" className="btn btn-outline-primary">
-                      Send inn
-                    </button>
-                  </form>
+                      <label htmlFor="amount" className="form-label">
+                        Hvor mye vil du satse?
+                      </label>
+                      <input
+                        type="number"
+                        className="form-control"
+                        min={1}
+                        max={user.total}
+                        id="amount"
+                      />
+                      <input id="id" type="hidden" name="id" value={bet._id} />
+                      <button type="submit" className="btn btn-outline-primary">
+                        Send inn
+                      </button>
+                    </form>
+                  </>
                 ) : (
                   <p className="text-danger fw-bold pt-3">Deadline passert</p>
                 )}
