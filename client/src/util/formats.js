@@ -1,14 +1,11 @@
 function DateFormat(props) {
   const date = new Date(Date.parse(props.date));
+  const hours = ("0" + date.getUTCHours()).substr(-2);
+  const minutes = ("0" + date.getUTCMinutes()).substr(-2);
   return (
     <>
-      {"  " +
-        date.getHours() +
-        ":" +
-        date.getMinutes() +
-        " - " +
-        date.getDate()}
-      /{date.getMonth() + 1}/{date.getFullYear()}
+      {"UTC:  " + hours + ":" + minutes + " - " + date.getUTCDate()}/
+      {date.getUTCMonth() + 1}/{date.getUTCFullYear()}
     </>
   );
 }

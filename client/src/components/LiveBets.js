@@ -91,12 +91,10 @@ function LiveBets(props) {
                     <p className="card-text">Ikke inntreffer: {bet.oddsL}</p>
                   </div>
                 </div>
-                <div className="row py-2">
+                <div className="row pb-3">
+                  <p className="fw-bold card-text">Deadline: </p>
                   <p className="card-text">
-                    <p className="fw-bold">Deadline: </p>
-                    <p>
-                      <DateFormat date={bet.deadline} />
-                    </p>
+                    <DateFormat date={bet.deadline} />
                   </p>
                 </div>
                 {Date.parse(bet.deadline) > Date.now() ? (
