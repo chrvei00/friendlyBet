@@ -59,7 +59,6 @@ exports.placeBet = async (req, res) => {
     const { amount, winOrLose } = req.body;
     const id = req.params.id;
     const user = req.session.user;
-    console.log(user);
 
     if (!amount || !winOrLose || !id || !user) {
       return res.status(400).json({ message: "missing data" });
