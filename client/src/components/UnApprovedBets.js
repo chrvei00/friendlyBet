@@ -1,4 +1,5 @@
 import { updateBet, deleteBet } from "../util/api";
+import { DateFormat } from "../util/formats";
 
 function UnApprovedBets(props) {
   const { bets } = props;
@@ -52,7 +53,14 @@ function UnApprovedBets(props) {
                     <p className="card-text">Ikke inntreffer: {bet.oddsL}</p>
                   </div>
                 </div>
-                <p className="card-text fw-bold">Deadline: {bet.deadline}</p>
+                <div className="row py-2">
+                  <p className="card-text">
+                    <p className="fw-bold">Deadline: </p>
+                    <p>
+                      <DateFormat date={bet.deadline} />
+                    </p>
+                  </p>
+                </div>
                 <div className="row">
                   <div className="col-3">
                     <button
