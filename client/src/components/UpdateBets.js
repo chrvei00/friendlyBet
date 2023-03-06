@@ -1,38 +1,10 @@
-import { updateBet, deleteBet, closeBet } from "../util/api";
+import { updateBet, deleteBet } from "../util/api";
 import { useState } from "react";
 
 function UpdateBets(props) {
-  const { bets, users, user } = props;
+  const { bets, users } = props;
 
   const [responseMessage, setResponseMessage] = useState(null);
-
-  const handleCloseBet = (e, bet) => {
-    e.preventDefault();
-    if (bet.finished || Date.parse(bet.deadline) > Date.now()) {
-      setResponseMessage(
-        "Bettet er allerede avsluttet, eller deadlinen er ikke passert"
-      );
-      return;
-    } else if (!e.target.winOrLose.value) {
-      setResponseMessage("Du må velge om bettet ble innfridd eller ikke");
-      return;
-    } else {
-      bet.winOrLose = e.target.winOrLose.value === "true";
-      bet.finished = true;
-      bet.finishedDate = Date.now();
-      bet.closedBy = user.username;
-      closeBet(bet._id, bet)
-        .then((res) => {
-          console.log(res);
-          setResponseMessage(res.data.message);
-          window.location.reload();
-        })
-        .catch((err) => {
-          setResponseMessage(err.response.data.message);
-          console.log(err);
-        });
-    }
-  };
 
   const modifyBet = (e, bet) => {
     e.preventDefault();
@@ -205,29 +177,6 @@ function UpdateBets(props) {
                         Slett
                       </button>
                     </div>
-                  </div>
-                </div>
-              </div>
-            </form>
-            <form
-              onSubmit={(e) => {
-                handleCloseBet(e, bet);
-              }}
-            >
-              <div
-                className="card"
-                style={{ borderRadius: "0px 0px 15px 15px" }}
-              >
-                <div className="card-body">
-                  <label>Inntraff betet?</label>
-                  <select className="form-control" id="winOrLose">
-                    <option>true</option>
-                    <option>false</option>
-                  </select>{" "}
-                  <div className="py-2">
-                    <button className="btn btn-sm btn-success" type="submit">
-                      Close bet
-                    </button>
                   </div>
                 </div>
               </div>
