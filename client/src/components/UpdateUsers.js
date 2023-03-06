@@ -1,10 +1,26 @@
 import { updateUser, deleteUser } from "../util/api";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { getBets } from "../util/api";
 
 function UpdateUsers(props) {
   const { users } = props;
+  const [bets, setBets] = useState(undefined);
 
   const [responseMessage, setResponseMessage] = useState(null);
+
+  useEffect(() => {
+    getBets()
+      .then((res) => {
+        if (res.data.data) {
+          setBets(res.data.data);
+        } else {
+          setBets(undefined);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
 
   const modifyUser = (e, user) => {
     e.preventDefault();

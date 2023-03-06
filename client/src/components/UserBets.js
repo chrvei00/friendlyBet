@@ -83,7 +83,7 @@ function UserBets() {
   };
 
   const showUserBets = () => {
-    return userBets.length === 0 ? (
+    return userBets.length > 0 ? (
       userBets.map((bet) => (
         <div key={bet._id} className="container py-3">
           <div className="card text-bg-light bg-opacity-75">

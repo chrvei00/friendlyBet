@@ -34,7 +34,6 @@ function HistoricUserBets() {
 
   useEffect(() => {
     if (bets !== undefined && user !== null) {
-      console.log(user);
       setHistoricUserBets(
         bets
           .filter(
@@ -96,7 +95,7 @@ function HistoricUserBets() {
   };
 
   const showHistoricUserBets = () => {
-    return historicUserBets.length === 0 ? (
+    return historicUserBets.length > 0 ? (
       historicUserBets.map((bet) => (
         <div key={bet._id} className="container py-3">
           <div className="card">
