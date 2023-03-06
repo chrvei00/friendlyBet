@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { checkAuth, getBets } from "../util/api";
 
-function UserBets() {
-  const [userBets, setUserBets] = useState([]);
+function HistoricUserBets() {
+  const [historicUserBets, setHistoricUserBets] = useState([]);
   const [bets, setBets] = useState(undefined);
   const [user, setUser] = useState(null);
 
@@ -34,21 +34,22 @@ function UserBets() {
 
   useEffect(() => {
     if (bets !== undefined && user !== null) {
-      setUserBets(
+      console.log(user);
+      setHistoricUserBets(
         bets
           .filter(
             (bet) =>
-              user.activeBets.filter((activeBet) => activeBet.betID === bet._id)
+              user.prevBets.filter((prevBet) => prevBet.betID === bet._id)
                 .length > 0
           )
-          .filter((bet) => bet.approved && !bet.finished)
+          .filter((bet) => bet.approved && bet.finished)
       );
     }
   }, [bets, user]);
 
-  const getBetInformartion = (betID, currentBet) => {
-    let tmp = <h1>No bet</h1>;
-    user.activeBets.forEach((bet) => {
+  const getHistoricBetInformartion = (betID, currentBet) => {
+    let tmp;
+    user.prevBets.forEach((bet) => {
       if (bet.betID === betID) {
         tmp = (
           <div
@@ -56,7 +57,7 @@ function UserBets() {
             style={{ borderRadius: "10px" }}
           >
             <div className="row pb-2">
-              <h6 className="text-muted">prediksjon:</h6>
+              <h6 className="text-muted">Prediksjon:</h6>
               <h6 className="fw-bold">
                 {bet.winOrLose
                   ? "inntreffer: " + currentBet.oddsW
@@ -64,15 +65,27 @@ function UserBets() {
               </h6>
             </div>
             <div className="row pb-2">
-              <h6 className="text-muted">innsats:</h6>
+              <h6 className="text-muted">Innsats:</h6>
               <h6 className="fw-bold">{bet.amount}</h6>
             </div>
             <div>
-              <h6 className="text-muted">mulig gevinst:</h6>
+              <h6 className="text-muted">Mulig gevinst:</h6>
               <h6 className="fw-bold">
                 {bet.winOrLose
                   ? currentBet.oddsW * bet.amount
                   : currentBet.oddsL * bet.amount}
+              </h6>
+            </div>
+            <div>
+              <h6 className="text-muted">Profit:</h6>
+              <h6
+                className={
+                  bet.profit > 0
+                    ? "fw-bold text-success"
+                    : "fw-bold text-danger"
+                }
+              >
+                {bet.profit}
               </h6>
             </div>
           </div>
@@ -82,31 +95,31 @@ function UserBets() {
     return tmp;
   };
 
-  const showUserBets = () => {
-    return userBets.length === 0 ? (
-      userBets.map((bet) => (
+  const showHistoricUserBets = () => {
+    return historicUserBets.length === 0 ? (
+      historicUserBets.map((bet) => (
         <div key={bet._id} className="container py-3">
-          <div className="card text-bg-light bg-opacity-75">
+          <div className="card">
             <div className="card-body">
               <h5 className="card-title fw-bold">{bet.title}</h5>
               <h6 className="card-subtitle text-muted pb-2">
                 Author: {bet.author}
               </h6>
               <p className="card-text">{bet.description}</p>
-              {getBetInformartion(bet._id, bet)}
+              {getHistoricBetInformartion(bet._id, bet)}
             </div>
           </div>
         </div>
       ))
     ) : (
-      <h5 className="text-danger fw-italic py-3"> Du har ingen aktive bets </h5>
+      <h5 className="text-danger fw-italic py-3"> Du har ingen historikk </h5>
     );
   };
 
   return (
     <>
       {bets !== undefined && user !== null ? (
-        showUserBets()
+        showHistoricUserBets()
       ) : (
         <div className="container py-4">
           <div className="spinner-border" role="status">
@@ -118,4 +131,4 @@ function UserBets() {
   );
 }
 
-export default UserBets;
+export default HistoricUserBets;

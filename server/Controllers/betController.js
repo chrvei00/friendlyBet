@@ -85,10 +85,21 @@ exports.closeBet = async (req, res) => {
             activeBet.betID === bet._id &&
             activeBet.winOrLose === bet.winOrLose
           ) {
-            bet.winOrLose
-              ? (user.total += activeBet.amount * bet.oddsW)
-              : (user.total += activeBet.amount * bet.oddsL);
-            await userService.updateUser(user._id, user);
+            user.activeBets = user.activeBets.filter(
+              (bet) => bet.betID !== activeBet.betID
+            );
+            //TODO
+            const profit = bet.winOrLose
+              ? activeBet.amount * bet.oddsW
+              : activeBet.amount * bet.oddsL;
+            user.prevBets.push({
+              betID: activeBet.betID,
+              winOrLose: activeBet.winOrLose,
+              amount: activeBet.amount,
+              profit: profit,
+            });
+            user.total += profit;
+            req.session.user = await userService.updateUser(user._id, user);
           }
         });
       });
