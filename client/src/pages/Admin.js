@@ -1,17 +1,19 @@
 import { React, useEffect, useState } from "react";
+import { getAllUsers, getAllBets } from "../util/api";
 import Nav from "../components/Nav";
 import UnApprovedBets from "../components/UnApprovedBets";
 import UnApprovedUsers from "../components/UnApprovedUsers";
 import UpdateUsers from "../components/UpdateUsers";
 import UpdateBets from "../components/UpdateBets";
-import { getAllUsers, getAllBets } from "../util/api";
+import ClosableBets from "../components/ClosableBets";
 
 function Admin(props) {
   const { user } = props;
   const [users, setUsers] = useState(undefined);
   const [allBets, setAllBets] = useState(undefined);
-  const [hideApproveUsers, setHideApproveUsers] = useState(false);
-  const [hideApproveBets, setHideApproveBets] = useState(false);
+  const [hideClosableBets, setHideClosableBets] = useState(true);
+  const [hideApproveUsers, setHideApproveUsers] = useState(true);
+  const [hideApproveBets, setHideApproveBets] = useState(true);
   const [hideUpdateUsers, setHideUpdateUsers] = useState(true);
   const [hideUpdateBets, setHideUpdateBets] = useState(true);
 
@@ -44,6 +46,31 @@ function Admin(props) {
         </div>
       </div>
       <div className="container-md">
+        {allBets !== undefined ? (
+          allBets.filter(
+            (bet) =>
+              !bet.finished &&
+              bet.approved &&
+              Date.parse(bet.deadline) < Date.now()
+          ).length > 0 ? (
+            <div className="card mb-2">
+              <div className="card-header">
+                <h1 className="fw-bold text-warning">Close bets</h1>
+                <button
+                  className="btn btn-primary"
+                  onClick={() => setHideClosableBets(!hideClosableBets)}
+                >
+                  {hideClosableBets ? "Show" : "Hide"}
+                </button>
+                {!hideClosableBets ? <ClosableBets user={user} /> : null}
+              </div>
+            </div>
+          ) : null
+        ) : (
+          <div className="spinner-border" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+        )}
         {users !== undefined ? (
           users.filter((user) => !user.approved).length > 0 ? (
             <div className="card mb-2">
