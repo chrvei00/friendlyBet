@@ -61,6 +61,102 @@ function LiveBets(props) {
       });
   };
 
+  const showLiveBets = () => {
+    return liveBets.length > 0 ? (
+      liveBets.map((bet) => (
+        <div key={bet._id} className="container py-3">
+          <div className="card text-bg-light bg-opacity-75">
+            <div className="card-body">
+              <h5 className="card-title fw-bold">{bet.title}</h5>
+              <h6 className="card-subtitle text-muted pb-3">
+                Laget av: {bet.author}
+              </h6>
+              <div className="row py-3">
+                <p className="card-text">{bet.description}</p>
+              </div>
+              <div className="row py-1">
+                <h6 className="fw-bold">Odds: </h6>
+              </div>
+              <div className="row pb-3">
+                <div className="col-3">
+                  <p className="card-text">Inntreffer: {bet.oddsW}</p>
+                </div>
+                <div className="col">
+                  <p className="card-text">Ikke inntreffer: {bet.oddsL}</p>
+                </div>
+              </div>
+              <div className="row pb-3">
+                <p className="fw-bold card-text">Deadline: </p>
+                <p className="card-text">
+                  <DateFormat date={bet.deadline} />
+                </p>
+              </div>
+              {Date.parse(bet.deadline) > Date.now() ? (
+                <>
+                  <h5 className="card-title fw-bold">Sats: </h5>{" "}
+                  <form
+                    onSubmit={(e) => {
+                      handlePlaceBet(e);
+                    }}
+                    className="row g-3 pt-3"
+                  >
+                    <div className="row">
+                      <div className="form-check">
+                        <input
+                          className="form-check-input"
+                          type="radio"
+                          name="winOrLose"
+                          id="win"
+                          value={true}
+                        />
+                        <label className="form-check-label" htmlFor="win">
+                          Inntreffer
+                        </label>
+                      </div>
+                      <div className="form-check">
+                        <input
+                          className="form-check-input"
+                          type="radio"
+                          name="winOrLose"
+                          id="lose"
+                          value={false}
+                          required
+                        />
+                        <label className="form-check-label" htmlFor="lose">
+                          Ikke inntreffer
+                        </label>
+                      </div>
+                    </div>
+                    <label htmlFor="amount" className="form-label">
+                      Hvor mye vil du satse?
+                    </label>
+                    <input
+                      type="number"
+                      className="form-control"
+                      min={1}
+                      max={user.total}
+                      id="amount"
+                    />
+                    <input id="id" type="hidden" name="id" value={bet._id} />
+                    <button type="submit" className="btn btn-outline-primary">
+                      Send inn
+                    </button>
+                  </form>
+                </>
+              ) : (
+                <p className="text-danger fw-bold pt-3">Deadline passert</p>
+              )}
+            </div>
+          </div>
+        </div>
+      ))
+    ) : (
+      <h5 className="text-danger fw-italic py-3">
+        Det finnes ingen bets du kan satse på
+      </h5>
+    );
+  };
+
   return (
     <>
       {responseMessage !== null ? (
@@ -68,97 +164,13 @@ function LiveBets(props) {
           {responseMessage}
         </div>
       ) : null}
-      {liveBets ? (
-        liveBets.map((bet) => (
-          <div key={bet._id} className="container py-3">
-            <div className="card text-bg-light bg-opacity-75">
-              <div className="card-body">
-                <h5 className="card-title fw-bold">{bet.title}</h5>
-                <h6 className="card-subtitle text-muted pb-3">
-                  Laget av: {bet.author}
-                </h6>
-                <div className="row py-3">
-                  <p className="card-text">{bet.description}</p>
-                </div>
-                <div className="row py-1">
-                  <h6 className="fw-bold">Odds: </h6>
-                </div>
-                <div className="row pb-3">
-                  <div className="col-3">
-                    <p className="card-text">Inntreffer: {bet.oddsW}</p>
-                  </div>
-                  <div className="col">
-                    <p className="card-text">Ikke inntreffer: {bet.oddsL}</p>
-                  </div>
-                </div>
-                <div className="row pb-3">
-                  <p className="fw-bold card-text">Deadline: </p>
-                  <p className="card-text">
-                    <DateFormat date={bet.deadline} />
-                  </p>
-                </div>
-                {Date.parse(bet.deadline) > Date.now() ? (
-                  <>
-                    <h5 className="card-title fw-bold">Sats: </h5>{" "}
-                    <form
-                      onSubmit={(e) => {
-                        handlePlaceBet(e);
-                      }}
-                      className="row g-3 pt-3"
-                    >
-                      <div className="row">
-                        <div className="form-check">
-                          <input
-                            className="form-check-input"
-                            type="radio"
-                            name="winOrLose"
-                            id="win"
-                            value={true}
-                          />
-                          <label className="form-check-label" htmlFor="win">
-                            Inntreffer
-                          </label>
-                        </div>
-                        <div className="form-check">
-                          <input
-                            className="form-check-input"
-                            type="radio"
-                            name="winOrLose"
-                            id="lose"
-                            value={false}
-                            required
-                          />
-                          <label className="form-check-label" htmlFor="lose">
-                            Ikke inntreffer
-                          </label>
-                        </div>
-                      </div>
-                      <label htmlFor="amount" className="form-label">
-                        Hvor mye vil du satse?
-                      </label>
-                      <input
-                        type="number"
-                        className="form-control"
-                        min={1}
-                        max={user.total}
-                        id="amount"
-                      />
-                      <input id="id" type="hidden" name="id" value={bet._id} />
-                      <button type="submit" className="btn btn-outline-primary">
-                        Send inn
-                      </button>
-                    </form>
-                  </>
-                ) : (
-                  <p className="text-danger fw-bold pt-3">Deadline passert</p>
-                )}
-              </div>
-            </div>
-          </div>
-        ))
+      {bets !== undefined ? (
+        showLiveBets()
       ) : (
-        <div className="spinner-border" role="status">
-          <span className="visually-hidden">Loading...</span>
+        <div className="container py-4">
+          <div className="spinner-border" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
         </div>
       )}
     </>

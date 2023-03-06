@@ -1,11 +1,34 @@
 import { updateBet, deleteBet } from "../util/api";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DateFormat } from "../util/formats";
+import { getBets } from "../util/api";
 
 function UpdateBets(props) {
-  const { bets, users } = props;
+  const { users } = props;
 
+  const [bets, setBets] = useState(undefined);
+  const [updatableBets, setUpdatableBets] = useState([]);
   const [responseMessage, setResponseMessage] = useState(null);
+
+  useEffect(() => {
+    getBets()
+      .then((res) => {
+        if (res.data.data) {
+          setBets(res.data.data);
+        } else {
+          setBets(undefined);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
+  useEffect(() => {
+    if (bets !== undefined) {
+      setUpdatableBets(bets.filter((bet) => !bet.finished && bet.approved));
+    }
+  }, [bets]);
 
   const modifyBet = (e, bet) => {
     e.preventDefault();
@@ -55,9 +78,8 @@ function UpdateBets(props) {
   };
 
   const showAllBets = () => {
-    return bets
-      .filter((bet) => !bet.finished && bet.approved)
-      .map((bet) => {
+    return updatableBets.length > 0 ? (
+      updatableBets.map((bet) => {
         return (
           <div key={bet._id} className="container py-3">
             <form onSubmit={(e) => modifyBet(e, bet)}>
@@ -185,7 +207,12 @@ function UpdateBets(props) {
             </form>
           </div>
         );
-      });
+      })
+    ) : (
+      <h5 className="text-danger fw-italic py-3">
+        Det finnes ingen bets som kan oppdateres
+      </h5>
+    );
   };
   return (
     <>
@@ -194,8 +221,15 @@ function UpdateBets(props) {
           {responseMessage}
         </div>
       ) : null}
-
-      {showAllBets()}
+      {bets !== undefined ? (
+        showAllBets()
+      ) : (
+        <div className="container py-4">
+          <div className="spinner-border" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+        </div>
+      )}
     </>
   );
 }
