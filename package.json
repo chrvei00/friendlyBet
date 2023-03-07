@@ -2,13 +2,15 @@
   "name": "friendlybet",
   "version": "1.0.0",
   "description": "Betting system for friendgroups, if u have any",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "start": "npm run build-server && npm run build-client && npm run start-server && npm run start-client",
-    "start-server": "cd server && npm start",
-    "start-client": "cd client && npm start",
-    "build-server": "cd server && npm install",
-    "build-client": "cd client && npm install"
+    "start": "node server.js",
+    "heroku-postbuild": "cd client && npm install --only=dev && npm install && npm run build",
+    "build-server": "npm install",
+    "start-server": "node server.js",
+    "start-server-dev": "nodemon server.js",
+    "build-client": "cd client && npm install",
+    "start-client": "cd client && npm start"
   },
   "repository": {
     "type": "git",
@@ -23,6 +25,22 @@
   "dependencies": {
     "@popperjs/core": "^2.11.6",
     "bootstrap": "^5.2.3",
-    "jquery": "^3.6.3"
+    "jquery": "^3.6.3",
+    "bcrypt": "^5.1.0",
+    "connect-mongodb-session": "^3.1.1",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "mongodb": "^4.13.0",
+    "mongoose": "^6.8.4"
+  },
+  "engines": {
+    "node": "18.13.0"
+  },
+  "devDependencies": {
+    "chai": "^4.3.7",
+    "chai-http": "^4.3.0",
+    "mocha": "^10.2.0",
+    "nodemon": "^2.0.20"
   }
 }
