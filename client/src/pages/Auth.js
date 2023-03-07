@@ -3,9 +3,9 @@ import { Navigate } from "react-router-dom";
 const { login, register, checkAuth } = require("../util/api");
 
 function Auth(props) {
+  const { updateUser } = props;
   const [error, setError] = useState("");
 
-  const { updateUser } = props;
   const handleLogin = (e) => {
     e.preventDefault();
     login({ username: username, password: password })
@@ -70,18 +70,19 @@ function Auth(props) {
           position: "relative",
         }}
       >
+        <h3 className="text-center">Logg inn</h3>
+
+        <div className="text-center">
+          Ny?{" "}
+          <button
+            className="btn btn-sm btn-outline-light fw-bold"
+            onClick={changeAuthMode}
+          >
+            Registrer deg
+          </button>
+        </div>
         <form onSubmit={(e) => handleLogin(e)}>
           <div>
-            <h3 className="text-center">Logg inn</h3>
-            <div className="text-center">
-              Ny?{" "}
-              <button
-                className="btn btn-sm btn-outline-light fw-bold"
-                onClick={changeAuthMode}
-              >
-                Registrer deg
-              </button>
-            </div>
             <div className="form-group mt-3">
               <label>Navn</label>
               <input
@@ -130,18 +131,18 @@ function Auth(props) {
           position: "relative",
         }}
       >
+        <h3 className="text-center">Registrer deg</h3>
+        <div className="text-center">
+          Har du bruker?{" "}
+          <button
+            className="btn btn-sm btn-outline-light fw-bold"
+            onClick={changeAuthMode}
+          >
+            Logg inn
+          </button>
+        </div>
         <form onSubmit={(e) => handleRegister(e)}>
           <div>
-            <h3 className="text-center">Registrer deg</h3>
-            <div className="text-center">
-              Har du bruker?{" "}
-              <button
-                className="btn btn-sm btn-outline-light fw-bold"
-                onClick={changeAuthMode}
-              >
-                Logg inn
-              </button>
-            </div>
             <div className="form-group mt-3">
               <label>Navn</label>
               <input

@@ -98,13 +98,18 @@ exports.closeBet = async (req, res) => {
               amount: activeBet.amount,
               profit: profit,
             });
-            user.total += profit;
-            req.session.user = await userService.updateUser(user._id, user);
+            bet.winOrLose == activeBet.winOrLose
+              ? (user.total += profit)
+              : (user.total -= activeBet.amount);
+            await userService.updateUser(user._id, user);
           }
         });
       });
     });
     const newBet = await betService.updateBet(req.params.id, bet);
+    const newUser = await userService.getUserById(req.session.user._id);
+    console.log(newUser);
+    newUser ? (req.session.user = newUser) : null;
     res.json({ data: newBet, status: "success" });
   } catch (err) {
     res.status(500).json({ error: err.message });

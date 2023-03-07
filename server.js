@@ -75,7 +75,7 @@ app.use((req, res, next) => {
 });
 
 // Have Node serve the files for our built React app
-app.use(express.static(path.resolve(__dirname, "../client/build")));
+app.use(express.static(path.join(__dirname, "client", "build")));
 
 //api-calls
 const betRouter = require("./Routes/betRoutes");
@@ -90,7 +90,7 @@ app.use("/api/admin", checkLoggedIn, checkAdministrator, adminRouter);
 
 // Handle all other GET-reqs
 app.get("*", (req, res) => {
-  res.status(404).json({ message: "404 not found" });
+  res.sendFile(path.join(__dirname, "client", "build", "index.html"));
 });
 
 app.listen(PORT, () => {
