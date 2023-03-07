@@ -4,6 +4,7 @@
   "description": "Betting system for friendgroups, if u have any",
   "main": "index.js",
   "scripts": {
+    "start": "npm run build-server && npm run build-client && npm run start-server && npm run start-client",
     "start-server": "cd server && npm start",
     "start-client": "cd client && npm start",
     "build-server": "cd server && npm install",
