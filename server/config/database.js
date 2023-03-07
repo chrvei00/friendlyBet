@@ -1,5 +1,5 @@
-const { DB_USERNAME,DB_PASSWORD,DB_CLUSTER } = require("./config");
+const { DB_USERNAME, DB_PASSWORD, DB_CLUSTER } = require("./config");
 
 module.exports = {
-  MongoURI: `mongodb+srv://${DB_USERNAME}:${DB_PASSWORD}@${DB_CLUSTER}.e50alrg.mongodb.net/?retryWrites=true&w=majority`
+  MongoURI: `mongodb+srv://${DB_USERNAME}:${DB_PASSWORD}@${DB_CLUSTER}.mongodb.net/?retryWrites=true&w=majority`,
 };
