@@ -13,14 +13,7 @@ mongoose.set("strictQuery", false);
 const app = express();
 app.use(express.json());
 
-const {
-  HOST,
-  PORT,
-  SESS_SECRET,
-  NODE_ENV,
-  IS_PROD,
-  COOKIE_NAME,
-} = require("./config/config");
+const { PORT, SESS_SECRET, NODE_ENV, COOKIE_NAME } = require("./config/config");
 const { MongoURI } = require("./config/database");
 const MAX_AGE = 1000 * 60 * 60 * 3; // Three hours
 
@@ -47,6 +40,7 @@ const mongoDBstore = new MongoDBStore({
 });
 
 // Express-Session
+app.set("trust proxy", 1);
 app.use(
   session({
     name: COOKIE_NAME,
@@ -57,7 +51,7 @@ app.use(
     cookie: {
       maxAge: MAX_AGE,
       sameSite: false,
-      secure: IS_PROD,
+      secure: NODE_ENV === "production",
     },
   })
 );
