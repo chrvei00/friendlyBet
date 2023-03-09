@@ -6,7 +6,7 @@ const {
   authCheck,
   logout,
   getLeaderboard,
-} = require("../Controllers/userController");
+} = require("../controllers/userController");
 
 const router = express.Router();
 

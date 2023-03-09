@@ -5,13 +5,13 @@ const {
   deleteBet,
   getAllBets,
   closeBet,
-} = require("../Controllers/betController");
+} = require("../controllers/betController");
 
 const {
   updateUser,
   deleteUser,
   getAllUsers,
-} = require("../Controllers/userController");
+} = require("../controllers/userController");
 
 const router = express.Router();
 
