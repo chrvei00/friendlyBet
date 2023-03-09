@@ -78,9 +78,9 @@ app.use((req, res, next) => {
 app.use(express.static(path.join(__dirname, "client", "build")));
 
 //api-calls
-const betRouter = require("./Routes/betRoutes");
-const userRouter = require("./Routes/userRoutes");
-const adminRouter = require("./Routes/adminRoutes");
+const betRouter = require("./routes/betRoutes");
+const userRouter = require("./routes/userRoutes");
+const adminRouter = require("./routes/adminRoutes");
 //  Middleware
 const { checkLoggedIn, checkAdministrator } = require("./util/authMiddleware");
 

@@ -5,7 +5,7 @@ const {
   createBet,
   getBetById,
   placeBet,
-} = require("../Controllers/betController");
+} = require("../controllers/betController");
 const { checkLoggedIn } = require("../util/authMiddleware");
 
 const router = express.Router();
